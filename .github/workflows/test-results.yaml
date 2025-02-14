@@ -12,7 +12,7 @@ on:
         type: string
 
 jobs:
-  display_results:
+  parse-results:
     runs-on: ubuntu-latest
 
     steps:
