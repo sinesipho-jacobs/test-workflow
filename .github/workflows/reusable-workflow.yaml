@@ -29,8 +29,10 @@ jobs:
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
 
-      - name: "Check robot-test-results directory"
-        run: ls -l webapp_tests/robot-test-results
+      - name: "📝 Check robot-test-results directory"
+        run: |
+          echo "Listing contents of robot-test-results"
+          ls -l webapp_tests/robot-test-results
 
   parse-results:
     runs-on: ubuntu-latest
@@ -46,9 +48,6 @@ jobs:
 
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
-
-      - name: "Create robot-test-results directory inside webapp_tests"
-        run: mkdir -p webapp_tests/robot-test-results
 
       - name: "Check if output.xml exists"
         run: |
