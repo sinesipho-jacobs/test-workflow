@@ -24,8 +24,18 @@ jobs:
 
       - name: Run Robot Framework Tests
         run: |
-          mkdir -p webapp_tests/reports  # Ensure reports directory exists
+          mkdir -p webapp_tests/reports
           robot --output webapp_tests/reports/output.xml webapp_tests/tests/
+
+      - name: Debug Reports Directory
+        run: ls -R webapp_tests/reports || echo "⚠️ No reports found!"
+
+      - name: Ensure Output File Exists
+        run: |
+          if [ ! -f "webapp_tests/reports/output.xml" ]; then
+            echo "⚠️ Error: Output file not found!"
+            exit 1
+          fi
 
       - name: Upload Test Results Artifact
         uses: actions/upload-artifact@v4
@@ -36,8 +46,8 @@ jobs:
   parse-results:
     name: Parse and Display Test Results
     runs-on: ubuntu-latest
-    needs: run-tests  # Waits for tests to complete
-    if: always() 
+    needs: run-tests
+    if: always()  # Run even if tests fail
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -55,6 +65,9 @@ jobs:
         with:
           name: robot-test-results
           path: webapp_tests/reports/
+
+      - name: Debug Reports Directory After Download
+        run: ls -R webapp_tests/reports || echo "⚠️ No reports found after download!"
 
       - name: Generate Test Summary
         run: python functions/display_test_results.py
