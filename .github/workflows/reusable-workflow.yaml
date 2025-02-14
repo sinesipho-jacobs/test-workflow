@@ -1,36 +1,35 @@
-# .github/workflows/reusable-workflow.yaml
-name: Reusable Test Workflow
+name: "🚀 Run Robot Framework Tests"
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  run_tests:
+  run-tests:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        pip install robotframework
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
 
-    - name: Run Robot Framework tests
-      run: |
-        robot --output webapp_tests/output.xml webapp_tests/tests/
+      - name: "🚀 Run Robot Framework Tests"
+        run: |
+          mkdir -p robot-test-results  # Create the directory to store results
+          robot --output robot-test-results/output.xml \
+                 --log robot-test-results/log.html \
+                 --report robot-test-results/report.html \
+                 webapp_tests/tests/
 
-    - name: List contents of webapp_tests
-      run: |
-        ls -R webapp_tests/
-
-    - name: Upload test results as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: robot-test-results
-        path: webapp_tests/output.xml
+      - name: "📝 Call Reusable Workflow to Parse Results"
+        uses: ./.github/workflows/test-results.yaml
+        with:
+          test-results-path: robot-test-results/output.xml
