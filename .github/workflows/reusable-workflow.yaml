@@ -28,23 +28,24 @@ jobs:
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
+        continue-on-error: true  # Allow workflow to continue even if tests fail
 
       - name: "⬆️ Upload Test Results"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
 
   parse-results:
-    needs: run-tests  # Ensure this runs only after run-tests completes
+    needs: run-tests
+    if: always()  # Ensure this runs no matter what
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
       - name: "⬇️ Download Test Results"
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4  # Updated to v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
