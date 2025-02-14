@@ -37,6 +37,7 @@ jobs:
     name: Parse and Display Test Results
     runs-on: ubuntu-latest
     needs: run-tests  # Waits for tests to complete
+    if: always() 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
