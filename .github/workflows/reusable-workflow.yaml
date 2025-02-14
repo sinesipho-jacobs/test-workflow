@@ -55,6 +55,8 @@ jobs:
 
       - name: "📝 Check if output.xml exists"
         run: |
+          echo "Listing current directory contents:"
+          ls -alh
           if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
             echo "✅ File 'output.xml' exists."
           else
