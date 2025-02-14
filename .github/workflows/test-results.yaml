@@ -7,6 +7,6 @@ on:
 
 jobs:
   run-tests-and-parse-results:
-    uses: ./.github/workflows/reusable-workflow.yml  # Calling the reusable workflow
+    uses: ./.github/workflows/reusable-workflow.yaml  # Calling the reusable workflow
     with:
       test-results-path: "webapp_tests/output.xml"
