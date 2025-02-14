@@ -24,7 +24,7 @@ jobs:
         run: pip install robotframework
 
       - name: "🚀 Run Tests"
-        run: robot --outputdir webapp_tests tests/
+        run: robot --outputdir webapp_tests/tests/
 
   parse-results:
     needs: run-tests
