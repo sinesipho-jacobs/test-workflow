@@ -9,30 +9,43 @@ class MyResultVisitor(ResultVisitor):
         self.markdown_file = markdown_file
 
     def visit_test(self, test):
+        test_info = {
+            "name": test.name,
+            "suite": test.parent.name,  # Get suite name
+            "status": test.status,
+            "message": test.message if test.status == 'FAIL' else "N/A",
+            "lineno": test.lineno if test.lineno else "Unknown"
+        }
+
         if test.status == 'FAIL':
-            self.failed_tests.append(test.name)
+            self.failed_tests.append(test_info)
         elif test.status == 'PASS':
-            self.passed_tests.append(test.name)
+            self.passed_tests.append(test_info)
 
     def end_result(self, result):
         total_tests = len(self.passed_tests) + len(self.failed_tests)
         passed_count = len(self.passed_tests)
         failed_count = len(self.failed_tests)
         
-        #Create a new markdown file
+        # Create a new markdown file
         with open(self.markdown_file, "w") as f:
-            f.write(f"# 🏆 Test Results Summary")
-            f.write(f"## 📊 Summary\n")
-            f.write(f"- **Total Tests** {total_tests}\n")
-            f.write(f"- **Passed:** {passed_count}\n")
+            f.write("# 🏆 Test Results Summary\n\n")
+            f.write("## 📊 Summary\n")
+            f.write(f"- **Total Tests:** {total_tests}\n")
+            f.write(f"- ✅ **Passed:** {passed_count}\n")
             f.write(f"- ❌ **Failed:** {failed_count}\n\n")
             
-            f.write("| Test Name | Status |\n")
-            f.write("|-----------|--------|\n")
+            f.write("## ✅ Passed Tests\n")
+            f.write("| Test Name | Suite | Status |\n")
+            f.write("|-----------|--------|--------|\n")
             for test in self.passed_tests:
-                f.write(f"| {test} | ✅ PASS |\n")
+                f.write(f"| {test['name']} | {test['suite']} | ✅ PASS |\n")
+
+            f.write("\n## ❌ Failed Tests\n")
+            f.write("| Test Name | Suite | Failure Message | Line No. |\n")
+            f.write("|-----------|--------|----------------|---------|\n")
             for test in self.failed_tests:
-                f.write(f"| {test} | ❌ FAIL |\n")
+                f.write(f"| {test['name']} | {test['suite']} | {test['message']} | {test['lineno']} |\n")
                 
         print(f"📄 Report generated: {self.markdown_file}")
 
@@ -41,6 +54,7 @@ if __name__ == '__main__':
         output_file = sys.argv[1]
     except IndexError:
         output_file = "webapp_tests/robot-test-results/output.xml"  # Default location inside webapp_tests
+
     try:
         markdown_file = sys.argv[2]
     except IndexError:
