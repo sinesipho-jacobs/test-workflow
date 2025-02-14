@@ -27,15 +27,13 @@ class MyResultVisitor(ResultVisitor):
         passed_count = len(self.passed_tests)
         failed_count = len(self.failed_tests)
         
-        # Create a new markdown file
         with open(self.markdown_file, "w") as f:
             f.write("# 🏆 Test Results Summary\n\n")
             f.write("## 📊 Summary\n")
             f.write(f"- **Total Tests:** {total_tests}\n")
             f.write(f"- ✅ **Passed:** {passed_count}\n")
             f.write(f"- ❌ **Failed:** {failed_count}\n\n")
-            
-            # Passed Tests Table
+
             if passed_count > 0:
                 f.write("## ✅ Passed Tests\n")
                 f.write("| Test Name | Suite | Status |\n")
@@ -44,13 +42,12 @@ class MyResultVisitor(ResultVisitor):
                     f.write(f"| {test['name']} | {test['suite']} | ✅ PASS |\n")
                 f.write("\n")
 
-            # Failed Tests Table
             if failed_count > 0:
                 f.write("## ❌ Failed Tests\n")
                 f.write("| Test Name | Suite | Failure Message | Line No. |\n")
                 f.write("|-----------|--------|----------------|---------|\n")
                 for test in self.failed_tests:
-                    f.write(f"| {test['name']} | {test['suite']} | {test['message']} | {test['lineno']} |\n")
+                    f.write(f"| {test['name']} | {test['suite']} | ❌ FAIL | {test['message']} | {test['lineno']} |\n")
                 f.write("\n")
 
         print(f"📄 Report generated: {self.markdown_file}")
@@ -59,14 +56,13 @@ if __name__ == '__main__':
     try:
         output_file = sys.argv[1]
     except IndexError:
-        output_file = "webapp_tests/robot-test-results/output.xml"  # Default location inside webapp_tests
+        output_file = "webapp_tests/robot-test-results/output.xml"
 
     try:
         markdown_file = sys.argv[2]
     except IndexError:
-        markdown_file = "report.md"  # Default markdown file name
+        markdown_file = "report.md"
 
-    # Check if the output file exists
     if not os.path.isfile(output_file):
         print(f"❌ Error: The output file '{output_file}' does not exist.")
         sys.exit(1)
