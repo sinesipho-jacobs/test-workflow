@@ -1,4 +1,5 @@
-name: "📊 Parse and Display Robot Test Results"
+# .github/workflows/reusable-workflow.yaml
+name: "Parse Robot Framework Results"
 
 on:
   workflow_call:
@@ -9,32 +10,17 @@ on:
 
 jobs:
   parse-results:
+    name: "📈 Parse Test Results"
     runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
 
+    steps:
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: "📜 Install Robot Framework"
+      - name: "📦 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "📊 Parse Test Results"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }} report.md
-
-      - name: "📂 Verify Report File"
-        run: |
-          ls -R  # List all files for debugging
-          if [ -f "report.md" ]; then
-            echo "✅ report.md file found!"
-            cat report.md
-          else
-            echo "❌ report.md file NOT found!"
-            exit 1
-          fi
-
-      - name: "📊 Display Test Results in GitHub Actions Summary"
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
+      - name: "🔍 Parse Test Results"
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Call your Python script
