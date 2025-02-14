@@ -15,15 +15,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run Robot Framework tests
-        run: |
-          robot -d results webapp_tests/tests/test.robot
-
-      - name: Parse results
-        uses: ./.github/workflows/reusable-workflow.yaml
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
         with:
-          output_file: results/output.xml
-          markdown_file: results/report.md
+          python-version: '3.9'
+
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
+
+      - name: "🚀 Run Tests"
+        run: robot --outputdir webapp_tests webapp_tests/tests/
+
+      - name: "📝 Call Reusable Workflow to Parse Results"
+        uses: ./.github/workflows/test-results.yaml
+        with:
+          test-results-path: webapp_tests/output.xml
 
   display-results:
     runs-on: ubuntu-latest
