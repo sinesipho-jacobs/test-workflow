@@ -22,10 +22,11 @@ jobs:
       - name: Install Dependencies
         run: pip install robotframework
 
+      - name: Ensure Reports Folder Exists
+        run: mkdir -p webapp_tests/reports  # ✅ Creates the folder
+
       - name: Run Robot Framework Tests
-        run: |
-          mkdir -p webapp_tests/reports
-          robot --output webapp_tests/reports/output.xml webapp_tests/tests/
+        run: robot --output webapp_tests/reports/output.xml webapp_tests/tests/
 
       - name: Debug Reports Directory
         run: ls -R webapp_tests/reports || echo "⚠️ No reports found!"
@@ -47,7 +48,7 @@ jobs:
     name: Parse and Display Test Results
     runs-on: ubuntu-latest
     needs: run-tests
-    if: always()  # Run even if tests fail
+    if: always()
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
