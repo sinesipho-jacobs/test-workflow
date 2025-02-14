@@ -1,9 +1,9 @@
-import os
+# functions/display_test_results.py
 from robot.api import ExecutionResult, ResultVisitor
 import sys
 
 class MyResultVisitor(ResultVisitor):
-    def __init__(self, markdown_file='webapp_tests/reports/report.md'):
+    def __init__(self, markdown_file='report.md'):
         self.failed_tests = []
         self.passed_tests = []
         self.markdown_file = markdown_file
@@ -15,22 +15,24 @@ class MyResultVisitor(ResultVisitor):
             self.passed_tests.append(test.name)
 
     def end_result(self, result):
+        # Create a new markdown file
         with open(self.markdown_file, "w") as f:
-            f.write("## 📝 Robot Framework Test Report\n")
+            f.write("# Robot Framework Report\n")
             f.write("| Test | Status |\n")
-            f.write("|------|--------|\n")
+            f.write("| --- | --- |\n")
             for test in self.passed_tests:
-                f.write(f"| {test} | ✅ PASS |\n")
+                f.write(f"| {test} | PASS |\n")
             for test in self.failed_tests:
-                f.write(f"| {test} | ❌ FAIL |\n")
-
+                f.write(f"| {test} | FAIL |\n")
+                
 if __name__ == '__main__':
-    output_file = "webapp_tests/reports/output.xml"
-    markdown_file = "webapp_tests/reports/report.md"
-
-    if not os.path.exists(output_file):
-        print(f"⚠️ Error: Output file '{output_file}' not found. Skipping result parsing.")
-        sys.exit(1)
-
+    try:
+        output_file = sys.argv[1]
+    except IndexError:
+        output_file = "webapp_tests/output.xml"
+    try:
+        markdown_file = sys.argv[2]
+    except IndexError:
+        markdown_file = "report.md"
     result = ExecutionResult(output_file)
-    result.visit(MyResultVisitor(markdown_file))
+    result.visit(MyResultVisitor())
