@@ -23,10 +23,10 @@ jobs:
 
     - name: Run Robot Framework tests
       run: |
-        robot --output output.xml webapp_tests/tests/
+        robot --output webapp_tests/output.xml webapp_tests/tests/
 
-    - name: Parse and display test results
-      uses: ./.github/workflows/test-results.yaml
+    - name: Upload test results as artifact
+      uses: actions/upload-artifact@v2
       with:
-        output_file: output.xml
-        markdown_file: report.md
+        name: robot-test-results
+        path: webapp_tests/output.xml
