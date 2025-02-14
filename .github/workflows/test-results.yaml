@@ -26,7 +26,7 @@ jobs:
       - name: "🚀 Run Tests"
         run: robot --outputdir webapp_tests --output output.xml webapp_tests/tests/
 
-  parse-results:
+  display-test-results:
     needs: run-tests
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
