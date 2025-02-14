@@ -32,8 +32,19 @@ jobs:
         run: ls -R webapp_tests  # Verify that the output files exist
 
   parse-results:
-    needs: run-tests  # Ensure this step runs after the tests are completed
-    if: always()  # This will ensure parse-results runs even if run-tests fails
-    uses: ./.github/workflows/reusable-workflow.yaml  # Reusable workflow to parse results
-    with:
-      test-results-path: "webapp_tests/output.xml"  # Path to the test results
+    needs: run-tests
+    if: always()  # This ensures parse-results always runs, even if run-tests fails
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "📂 List Files in Functions Directory"
+        run: ls -R functions/  # Verify that display_test_results.py exists in the functions directory
+
+      - name: "🐍 Run Python Script to Parse Results"
+        run: python functions/display_test_results.py webapp_tests/output.xml  # Run the script to parse the test results
+
+      - name: "📂 List Result Files"
+        run: ls -R  # Verify if the report was generated after running the script
