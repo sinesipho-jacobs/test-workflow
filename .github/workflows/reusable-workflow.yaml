@@ -1,23 +1,19 @@
-name: "📊 Robot Framework Test Summary"
+# .github/workflows/reusable-workflow.yaml
+name: "Parse Robot Framework Results"
 
 on:
   workflow_call:
     inputs:
       test-results-path:
-        description: "Path to Robot Framework test results XML"
-        required: false
-        default: "webapp_tests/output.xml"
+        required: true
         type: string
 
 jobs:
   parse-results:
-    name: "🔍 Parse Robot Test Results"
+    name: "📈 Parse Test Results"
     runs-on: ubuntu-latest
 
     steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
@@ -26,12 +22,5 @@ jobs:
       - name: "📦 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "🛠️ Generate Test Report"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }} report.md
-
-      - name: "📤 Upload Test Report as Artifact"
-        uses: actions/upload-artifact@v3
-        with:
-          name: robot-test-report
-          path: report.md
-
+      - name: "🔍 Parse Test Results"
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Call your Python script
