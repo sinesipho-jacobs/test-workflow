@@ -1,32 +1,32 @@
-name: Parse Robot Test Results
+# .github/workflows/reusable-workflow.yaml
+name: Reusable Test Workflow
 
 on:
   workflow_call:
-    inputs:
-      output_file:
-        required: true
-        type: string
-      markdown_file:
-        required: true
-        type: string
 
 jobs:
-  parse-results:
+  run_tests:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - name: Install Robot Framework
-        run: pip install robotframework
+    - name: Install dependencies
+      run: |
+        pip install robotframework
 
-      - name: Parse Robot Test Results
-        run: python functions/display_test_results.py ${{ inputs.output_file }} ${{ inputs.markdown_file }}
+    - name: Run Robot Framework tests
+      run: |
+        robot --output output.xml webapp_tests/tests/
 
-      - name: Display Results in GitHub Summary
-        run: cat ${{ inputs.markdown_file }} >> $GITHUB_STEP_SUMMARY
+    - name: Parse and display test results
+      uses: ./.github/workflows/test-results.yaml
+      with:
+        output_file: output.xml
+        markdown_file: report.md
