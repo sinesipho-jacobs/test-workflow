@@ -34,10 +34,15 @@ jobs:
   display-results:
     runs-on: ubuntu-latest
     needs: run-tests
+    if: always()  # Always run this job, even if the previous job fails
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Display results in GitHub summary
         run: |
-          cat results/report.md >> $GITHUB_STEP_SUMMARY
+          if [ -f results/report.md ]; then
+            cat results/report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No test results found." >> $GITHUB_STEP_SUMMARY
+          fi
