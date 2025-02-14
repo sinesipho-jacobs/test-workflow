@@ -12,7 +12,7 @@ class MyResultVisitor(ResultVisitor):
         test_info = {
             "name": test.name,
             "suite": test.parent.name,  # Get suite name
-            "status": test.status,
+            "status": "✅ PASS" if test.status == 'PASS' else "❌ FAIL",
             "message": test.message if test.status == 'FAIL' else "N/A",
             "lineno": test.lineno if test.lineno else "Unknown"
         }
@@ -39,15 +39,15 @@ class MyResultVisitor(ResultVisitor):
                 f.write("| Test Name | Suite | Status |\n")
                 f.write("|-----------|--------|--------|\n")
                 for test in self.passed_tests:
-                    f.write(f"| {test['name']} | {test['suite']} | ✅ PASS |\n")
+                    f.write(f"| {test['name']} | {test['suite']} | {test['status']} |\n")
                 f.write("\n")
 
             if failed_count > 0:
                 f.write("## ❌ Failed Tests\n")
-                f.write("| Test Name | Suite | Failure Message | Line No. |\n")
-                f.write("|-----------|--------|----------------|---------|\n")
+                f.write("| Test Name | Suite | Status | Failure Message | Line No. |\n")
+                f.write("|-----------|--------|--------|----------------|---------|\n")
                 for test in self.failed_tests:
-                    f.write(f"| {test['name']} | {test['suite']} | ❌ FAIL | {test['message']} | {test['lineno']} |\n")
+                    f.write(f"| {test['name']} | {test['suite']} | {test['status']} | {test['message']} | {test['lineno']} |\n")
                 f.write("\n")
 
         print(f"📄 Report generated: {self.markdown_file}")
