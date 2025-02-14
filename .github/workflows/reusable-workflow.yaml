@@ -1,14 +1,10 @@
 name: Parse Robot Test Results
 
 on:
-  workflow_call:
-    inputs:
-      output_file:
-        required: true
-        type: string
-      markdown_file:
-        required: true
-        type: string
+  workflow_run:
+    workflows: ["Run and Parse Robot Tests"]
+    types:
+      - completed
 
 jobs:
   parse-results:
