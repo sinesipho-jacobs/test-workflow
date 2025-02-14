@@ -44,6 +44,14 @@ jobs:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework  # 🔥 Fix: Install Robot Framework
+      
       - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4  # Updated to v4
         with:
