@@ -35,18 +35,24 @@ class MyResultVisitor(ResultVisitor):
             f.write(f"- ✅ **Passed:** {passed_count}\n")
             f.write(f"- ❌ **Failed:** {failed_count}\n\n")
             
-            f.write("## ✅ Passed Tests\n")
-            f.write("| Test Name | Suite | Status |\n")
-            f.write("|-----------|--------|--------|\n")
-            for test in self.passed_tests:
-                f.write(f"| {test['name']} | {test['suite']} | ✅ PASS |\n")
+            # Passed Tests Table
+            if passed_count > 0:
+                f.write("## ✅ Passed Tests\n")
+                f.write("| Test Name | Suite | Status |\n")
+                f.write("|-----------|--------|--------|\n")
+                for test in self.passed_tests:
+                    f.write(f"| {test['name']} | {test['suite']} | ✅ PASS |\n")
+                f.write("\n")
 
-            f.write("\n## ❌ Failed Tests\n")
-            f.write("| Test Name | Suite | Failure Message | Line No. |\n")
-            f.write("|-----------|--------|----------------|---------|\n")
-            for test in self.failed_tests:
-                f.write(f"| {test['name']} | {test['suite']} | {test['message']} | {test['lineno']} |\n")
-                
+            # Failed Tests Table
+            if failed_count > 0:
+                f.write("## ❌ Failed Tests\n")
+                f.write("| Test Name | Suite | Failure Message | Line No. |\n")
+                f.write("|-----------|--------|----------------|---------|\n")
+                for test in self.failed_tests:
+                    f.write(f"| {test['name']} | {test['suite']} | {test['message']} | {test['lineno']} |\n")
+                f.write("\n")
+
         print(f"📄 Report generated: {self.markdown_file}")
 
 if __name__ == '__main__':
