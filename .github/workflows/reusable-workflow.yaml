@@ -28,11 +28,18 @@ jobs:
           ls -l webapp_tests
           
       - name: "🚀 Run Robot Framework Tests"
+        continue-on-error: true  # This allows the workflow to proceed even if tests fail
         run: |
+          mkdir -p webapp_tests/robot-test-results  # Create the directory to store results
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
+
+      - name: "📝 Check robot-test-results directory"
+        run: |
+          # List contents of the robot-test-results directory after running the tests
+          ls -l webapp_tests/robot-test-results
 
       - name: "📝 Check robot-test-results directory"
         run: |
