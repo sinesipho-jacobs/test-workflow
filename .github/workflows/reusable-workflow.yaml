@@ -32,6 +32,7 @@ jobs:
   parse-results:
     needs: run-tests  # Ensures this job runs only after the 'run-tests' job
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
