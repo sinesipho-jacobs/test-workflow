@@ -1,5 +1,4 @@
-# .github/workflows/reusable-workflow.yaml
-name: "Parse Robot Framework Results"
+name: "Run Robot Framework Tests and Parse Results"
 
 on:
   workflow_call:
@@ -9,11 +8,17 @@ on:
         type: string
 
 jobs:
-  parse-results:
-    name: "📈 Parse Test Results"
+  run-tests:
+    name: "🛠️ Run Robot Framework Tests"
     runs-on: ubuntu-latest
 
     steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "📂 List Files in Tests Directory"
+        run: ls -R webapp_tests/tests/  # Ensure test files are in the correct directory
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
@@ -22,5 +27,27 @@ jobs:
       - name: "📦 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "🔍 Parse Test Results"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Call your Python script
+      - name: "🚀 Run Tests"
+        run: robot --outputdir webapp_tests --output output.xml webapp_tests/tests/  # Run tests with output location
+
+      - name: "📂 List Output Files"
+        run: ls -R webapp_tests  # Verify output files exist
+
+  parse-results:
+    name: "📊 Parse Test Results"
+    needs: run-tests
+    if: always()  # This ensures parse-results always runs, even if run-tests fails
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "📂 List Files in Functions Directory"
+        run: ls -R functions/  # Ensure the display_test_results.py script is in the correct folder
+
+      - name: "🐍 Run Python Script to Parse Results"
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Run the script to parse the test results
+
+      - name: "📂 List Result Files"
+        run: ls -R  # Verify if the report was generated after running the script
