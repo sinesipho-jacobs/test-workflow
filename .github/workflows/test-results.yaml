@@ -1,1 +1,33 @@
+name: "Run Robot Framework Tests"
 
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run-tests:
+    name: "🛠️ Run Robot Framework Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "📦 Install Robot Framework"
+        run: pip install robotframework
+
+      - name: "🚀 Run Tests"
+        run: robot --outputdir webapp_tests tests/
+
+  parse-results:
+    needs: run-tests
+    uses: ./.github/workflows/reusable-workflow.yaml
+    with:
+      test-results-path: "webapp_tests/output.xml"
