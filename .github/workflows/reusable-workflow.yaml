@@ -53,20 +53,12 @@ jobs:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
-      - name: "🐍 Set up Python"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📜 Install Robot Framework"
-        run: pip install robotframework
-
-      - name: "Check if output.xml exists"
+      - name: "📝 Check if output.xml exists"
         run: |
-          if [ -f webapp_tests/robot-test-results/output.xml ]; then
-            echo "File exists."
+          if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
+            echo "✅ File 'output.xml' exists."
           else
-            echo "❌ File 'webapp_tests/robot-test-results/output.xml' not found!"
+            echo "❌ File 'output.xml' not found!"
             exit 1
           fi
 
