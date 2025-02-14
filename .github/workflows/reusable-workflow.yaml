@@ -17,13 +17,18 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-
+    
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
-
+        
+      - name: "📝 Check robot-test-results directory"
+        run: |
+          mkdir -p webapp_tests/robot-test-results 
+          echo "Listing contents of robot-test-results"
+          ls -l webapp_tests
+          
       - name: "🚀 Run Robot Framework Tests"
         run: |
-          mkdir -p webapp_tests/robot-test-results  # Create the directory to store results inside webapp_tests
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
