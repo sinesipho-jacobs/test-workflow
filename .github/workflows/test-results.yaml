@@ -33,6 +33,7 @@ jobs:
 
   parse-results:
     needs: run-tests  # Ensure this step runs after the tests are completed
+    if: always()  # This will ensure parse-results runs even if run-tests fails
     uses: ./.github/workflows/reusable-workflow.yaml  # Reusable workflow to parse results
     with:
       test-results-path: "webapp_tests/output.xml"  # Path to the test results
