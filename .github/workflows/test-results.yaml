@@ -35,7 +35,7 @@ jobs:
 
     - name: Parse Robot Framework results
       run: |
-        python functions/display_test_results.py webapp_tests/output.xml ${{ inputs.markdown_file }}
+        python functions/display_test_results.py webapp_tests/robot_test_results/output.xml ${{ inputs.markdown_file }}
 
     - name: Display test results in GitHub Summary
       if: always()
