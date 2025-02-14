@@ -24,3 +24,14 @@ jobs:
         with:
           output_file: results/output.xml
           markdown_file: results/report.md
+
+  display-results:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Display results in GitHub summary
+        run: |
+          cat results/report.md >> $GITHUB_STEP_SUMMARY
