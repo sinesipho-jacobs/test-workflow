@@ -23,11 +23,14 @@ jobs:
 
       - name: "🚀 Run Robot Framework Tests"
         run: |
-          mkdir -p robot-test-results  # Create the directory to store results
-          robot --output robot-test-results/output.xml \
-                 --log robot-test-results/log.html \
-                 --report robot-test-results/report.html \
+          mkdir -p webapp_tests/robot-test-results  # Create the directory to store results inside webapp_tests
+          robot --output webapp_tests/robot-test-results/output.xml \
+                 --log webapp_tests/robot-test-results/log.html \
+                 --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
+
+      - name: "Check robot-test-results directory"
+        run: ls -l webapp_tests/robot-test-results
 
   parse-results:
     runs-on: ubuntu-latest
@@ -44,7 +47,19 @@ jobs:
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
+      - name: "Create robot-test-results directory inside webapp_tests"
+        run: mkdir -p webapp_tests/robot-test-results
+
+      - name: "Check if output.xml exists"
+        run: |
+          if [ -f webapp_tests/robot-test-results/output.xml ]; then
+            echo "File exists."
+          else
+            echo "❌ File 'webapp_tests/robot-test-results/output.xml' not found!"
+            exit 1
+          fi
+
       - name: "📊 Parse and Display Test Results"
         run: |
-          python functions/display_test_results.py robot-test-results/output.xml report.md
+          python functions/display_test_results.py webapp_tests/robot-test-results/output.xml report.md
           cat report.md >> $GITHUB_STEP_SUMMARY
