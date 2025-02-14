@@ -29,7 +29,22 @@ jobs:
                  --report robot-test-results/report.html \
                  webapp_tests/tests/
 
-      - name: "📝 Call Reusable Workflow to Parse Results"
-        uses: ./.github/workflows/test-results.yaml
+  parse-results:
+    runs-on: ubuntu-latest
+    needs: run-tests  # Ensures this job runs only after 'run-tests' finishes
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
         with:
-          test-results-path: robot-test-results/output.xml
+          python-version: '3.9'
+
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
+
+      - name: "📊 Parse and Display Test Results"
+        run: |
+          python functions/display_test_results.py robot-test-results/output.xml report.md
+          cat report.md >> $GITHUB_STEP_SUMMARY
