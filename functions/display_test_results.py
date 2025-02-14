@@ -29,7 +29,7 @@ if __name__ == '__main__':
     try:
         output_file = sys.argv[1]
     except IndexError:
-        output_file = "webapp_tests/output.xml"
+        output_file = "webapp_tests/robot-test-results/output.xml"
     try:
         markdown_file = sys.argv[2]
     except IndexError:
