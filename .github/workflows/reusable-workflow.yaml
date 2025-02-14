@@ -23,27 +23,36 @@ jobs:
 
       - name: "🚀 Run Robot Framework Tests"
         run: |
-          mkdir -p webapp_tests/robot-test-results  # Create the directory to store results
+          mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
 
+      - name: "⬆️ Upload Test Results"
+        uses: actions/upload-artifact@v3
+        with:
+          name: robot-test-results
+          path: webapp_tests/robot-test-results/
+
   parse-results:
-    needs: run-tests  # Ensures this job runs only after the 'run-tests' job
+    needs: run-tests  # Ensure this runs only after run-tests completes
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
-      - name: "List contents of the robot-test-results directory"
+      - name: "⬇️ Download Test Results"
+        uses: actions/download-artifact@v3
+        with:
+          name: robot-test-results
+          path: webapp_tests/robot-test-results/
+
+      - name: "📂 List contents of the test results directory"
         run: ls -alh webapp_tests/robot-test-results
 
       - name: "📝 Check if output.xml exists"
         run: |
-          echo "Listing current directory contents:"
-          ls -alh
           if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
             echo "✅ File 'output.xml' exists."
           else
