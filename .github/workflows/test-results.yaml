@@ -35,21 +35,8 @@ jobs:
           retention-days: 7
 
   parse-results:
-    runs-on: ubuntu-latest
     needs: run-tests
-    if: always()  # Ensures this job runs even if tests fail
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download test results artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results
-          path: reports/
-
-      - name: Call Reusable Workflow to Parse Results
-        uses: ./.github/workflows/reusable-workflow.yaml
-        with:
-          output_file: reports/output.xml
-          markdown_file: reports/report.md
+    uses: ./.github/workflows/reusable-workflow.yaml  # ✅ Correct way to call a local reusable workflow
+    with:
+      output_file: reports/output.xml
+      markdown_file: reports/report.md
