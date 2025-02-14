@@ -1,59 +1,4 @@
-name: "🚀 Run Robot Framework Tests"
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-
-jobs:
-  run-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
-      - name: "🐍 Set up Python"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-    
-      - name: "📜 Install Robot Framework"
-        run: pip install robotframework
-        
-      - name: "📝 Check robot-test-results directory"
-        run: |
-          mkdir -p webapp_tests/robot-test-results 
-          echo "Listing contents of robot-test-results"
-          ls -l webapp_tests
-          
-      - name: "🚀 Run Robot Framework Tests"
-        continue-on-error: true  # This allows the workflow to proceed even if tests fail
-        run: |
-          mkdir -p webapp_tests/robot-test-results  # Create the directory to store results
-          robot --output webapp_tests/robot-test-results/output.xml \
-                 --log webapp_tests/robot-test-results/log.html \
-                 --report webapp_tests/robot-test-results/report.html \
-                 webapp_tests/tests/
-
-      - name: "📝 Check robot-test-results directory"
-        run: |
-          # List contents of the robot-test-results directory after running the tests
-          ls -l webapp_tests/robot-test-results
-
-      - name: "📝 Check robot-test-results directory"
-        run: |
-          echo "Listing contents of robot-test-results"
-          ls -l webapp_tests/robot-test-results
-
-  parse-results:
-    runs-on: ubuntu-latest
-    if: always()  # Ensures the job runs even if tests fail
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
-      name: Run Robot Framework Tests and Parse Results
+name: Run Robot Framework Tests and Parse Results
 
 on:
   push:
@@ -110,9 +55,3 @@ jobs:
 
       - name: "📑 Display parsed test results"
         run: cat report.md >> $GITHUB_STEP_SUMMARY
-
-
-      - name: "📊 Parse and Display Test Results"
-        run: |
-          python functions/display_test_results.py webapp_tests/robot-test-results/output.xml report.md
-          cat report.md >> $GITHUB_STEP_SUMMARY
