@@ -1,4 +1,4 @@
-name: Reusable Workflow
+name: Parse Robot Test Results
 
 on:
   workflow_call:
@@ -15,18 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install robotframework
+      - name: Install Robot Framework
+        run: pip install robotframework
 
-      - name: Run Python script
-        run: |
-          python functions/display_test_results.py ${{ inputs.output_file }} ${{ inputs.markdown_file }}
+      - name: Parse Robot Test Results
+        run: python functions/display_test_results.py ${{ inputs.output_file }} ${{ inputs.markdown_file }}
+
+      - name: Display Results in GitHub Summary
+        run: cat ${{ inputs.markdown_file }} >> $GITHUB_STEP_SUMMARY
