@@ -33,7 +33,7 @@ jobs:
       - name: "📂 List Output Files"
         run: ls -R webapp_tests  # Verify output files exist
 
-  parse-results:
+parse-results:
     name: "📊 Parse Test Results"
     needs: run-tests
     if: always()  # This ensures parse-results always runs, even if run-tests fails
@@ -44,10 +44,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "📂 List Files in Functions Directory"
-        run: ls -R functions/  # Ensure the display_test_results.py script is in the correct folder
+        run: ls -R functions/  # Ensure display_test_results.py is in the functions directory
 
       - name: "🐍 Run Python Script to Parse Results"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Run the script to parse the test results
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Run the script
 
       - name: "📂 List Result Files"
         run: ls -R  # Verify if the report was generated after running the script
+
+      - name: "📊 Display Test Results in GitHub Actions Summary"
+        run: |
+          if [ -f "functions/report.md" ]; then
+            cat functions/report.md >> $GITHUB_STEP_SUMMARY  # Append the report to the GitHub Actions summary
+          fi
