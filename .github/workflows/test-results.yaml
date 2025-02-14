@@ -1,4 +1,4 @@
-name: "Run Robot Framework Tests"
+name: "Run Robot Framework Tests and Parse Results"
 
 on:
   push:
@@ -6,34 +6,7 @@ on:
       - main
 
 jobs:
-  run-tests:
-    name: "🛠️ Run Robot Framework Tests"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
-      - name: "📂 List Files"
-        run: ls -R  # Verify directory structure
-
-      - name: "🐍 Set up Python"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📦 Install Robot Framework"
-        run: pip install robotframework
-
-      - name: "🚀 Run Tests"
-        run: robot --outputdir webapp_tests --output output.xml webapp_tests/tests/  # Run tests and generate output
-
-      - name: "📂 List output files"
-        run: ls -R webapp_tests  # Verify that the output files exist
-
-  parse-results:
-    needs: run-tests
-    if: always()  # This ensures parse-results always runs, even if run-tests fails
-    uses: ./.github/workflows/reusable-workflow.yaml  # Reusable workflow to parse results
+  run-tests-and-parse-results:
+    uses: ./.github/workflows/reusable-workflow.yml  # Calling the reusable workflow
     with:
-      test-results-path: "webapp_tests/output.xml"  # Path to test results
+      test-results-path: "webapp_tests/output.xml"
