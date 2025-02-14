@@ -1,77 +1,40 @@
-name: Run Tests and Parse Results
+# .github/workflows/test-results.yaml
+name: Display Test Results
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_call:
+    inputs:
+      output_file:
+        required: true
+        type: string
+      markdown_file:
+        required: true
+        type: string
 
 jobs:
-  run-tests:
-    name: Run Robot Framework Tests
+  display_results:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - name: Install Dependencies
-        run: pip install robotframework
+    - name: Install dependencies
+      run: |
+        pip install robotframework
 
-      - name: Ensure Reports Folder Exists
-        run: mkdir -p webapp_tests/reports  # ✅ Creates the folder
+    - name: Parse Robot Framework results
+      run: |
+        python functions/display_test_results.py ${{ inputs.output_file }} ${{ inputs.markdown_file }}
 
-      - name: Run Robot Framework Tests
-        run: robot --output webapp_tests/reports/output.xml webapp_tests/tests/
-
-      - name: Debug Reports Directory
-        run: ls -R webapp_tests/reports || echo "⚠️ No reports found!"
-
-      - name: Ensure Output File Exists
-        run: |
-          if [ ! -f "webapp_tests/reports/output.xml" ]; then
-            echo "⚠️ Error: Output file not found!"
-            exit 1
-          fi
-
-      - name: Upload Test Results Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: robot-test-results
-          path: webapp_tests/reports/output.xml
-
-  parse-results:
-    name: Parse and Display Test Results
-    runs-on: ubuntu-latest
-    needs: run-tests
-    if: always()
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install Dependencies
-        run: pip install robotframework
-
-      - name: Download Test Results Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results
-          path: webapp_tests/reports/
-
-      - name: Debug Reports Directory After Download
-        run: ls -R webapp_tests/reports || echo "⚠️ No reports found after download!"
-
-      - name: Generate Test Summary
-        run: python functions/display_test_results.py
-
-      - name: Display Test Report in GitHub Summary
-        run: cat webapp_tests/reports/report.md >> $GITHUB_STEP_SUMMARY
+    - name: Display test results in GitHub Summary
+      if: always()
+      run: |
+        echo "### Test Results" >> ${{ inputs.markdown_file }}
+        echo "Test results are available [here](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_REF}/${{ inputs.markdown_file }})"
+        cat ${{ inputs.markdown_file }}
