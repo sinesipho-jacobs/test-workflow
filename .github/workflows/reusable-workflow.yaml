@@ -25,6 +25,10 @@ jobs:
       run: |
         robot --output webapp_tests/output.xml webapp_tests/tests/
 
+    - name: List contents of webapp_tests
+      run: |
+        ls -R webapp_tests/
+
     - name: Upload test results as artifact
       uses: actions/upload-artifact@v2
       with:
