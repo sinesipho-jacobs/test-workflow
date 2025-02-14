@@ -31,7 +31,7 @@ jobs:
 
   parse-results:
     runs-on: ubuntu-latest
-    if: always()  # This ensures the job always runs, even if previous jobs fail
+    if: always()  # Ensures the job runs even if tests fail
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
