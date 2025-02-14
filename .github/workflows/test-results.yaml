@@ -48,9 +48,6 @@ jobs:
           name: robot-test-results
           path: reports/
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Call Reusable Workflow to Parse Results
         uses: ./.github/workflows/reusable-workflow.yaml
         with:
