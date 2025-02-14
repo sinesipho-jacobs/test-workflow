@@ -1,4 +1,4 @@
-name: "Run Robot Framework Tests and Parse Results"
+name: "📊 Parse and Display Robot Test Results"
 
 on:
   workflow_call:
@@ -8,52 +8,33 @@ on:
         type: string
 
 jobs:
-  run-tests:
-    name: "🛠️ Run Robot Framework Tests"
+  parse-results:
     runs-on: ubuntu-latest
-
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
-
-      - name: "📂 List Files in Tests Directory"
-        run: ls -R webapp_tests/tests/  # Ensure test files are in the correct directory
 
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: "📦 Install Robot Framework"
+      - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "🚀 Run Tests"
-        run: robot --outputdir webapp_tests --output output.xml webapp_tests/tests/  # Run tests with output location
+      - name: "📊 Parse Test Results"
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }} report.md
 
-      - name: "📂 List Output Files"
-        run: ls -R webapp_tests  # Verify output files exist
-
-  parse-results:
-    name: "📊 Parse Test Results"
-    needs: run-tests
-    if: always()  # This ensures parse-results always runs, even if run-tests fails
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
-      - name: "📂 List Files in Functions Directory"
-        run: ls -R functions/  # Ensure the display_test_results.py script is in the correct folder
-
-      - name: "🐍 Run Python Script to Parse Results"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Run the script to parse the test results
-
-      - name: "📂 List Result Files"
-        run: ls -R
+      - name: "📂 Verify Report File"
+        run: |
+          ls -R  # List all files for debugging
+          if [ -f "report.md" ]; then
+            echo "✅ report.md file found!"
+            cat report.md
+          else
+            echo "❌ report.md file NOT found!"
+            exit 1
+          fi
 
       - name: "📊 Display Test Results in GitHub Actions Summary"
-        run: |
-          if [ -f "functions/report.md" ]; then
-            cat functions/report.md >> $GITHUB_STEP_SUMMARY  # Append the report to the GitHub Actions summary
-          fi
+        run: cat report.md >> $GITHUB_STEP_SUMMARY
