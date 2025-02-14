@@ -1,6 +1,6 @@
-# functions/display_test_results.py
 from robot.api import ExecutionResult, ResultVisitor
 import sys
+import os
 
 class MyResultVisitor(ResultVisitor):
     def __init__(self, markdown_file='report.md'):
@@ -29,10 +29,16 @@ if __name__ == '__main__':
     try:
         output_file = sys.argv[1]
     except IndexError:
-        output_file = "webapp_tests/robot-test-results/output.xml"
+        output_file = "robot-test-results/output.xml"  # Default path
     try:
         markdown_file = sys.argv[2]
     except IndexError:
         markdown_file = "report.md"
+    
+    # Check if the file exists before processing
+    if not os.path.exists(output_file):
+        print(f"❌ Error: The output file '{output_file}' does not exist.")
+        sys.exit(1)
+
     result = ExecutionResult(output_file)
     result.visit(MyResultVisitor())
