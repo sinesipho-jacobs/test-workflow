@@ -1,5 +1,4 @@
-# .github/workflows/reusable-workflow.yaml
-name: "Parse Robot Framework Results"
+name: "📊 Parse and Display Robot Test Results"
 
 on:
   workflow_call:
@@ -10,17 +9,21 @@ on:
 
 jobs:
   parse-results:
-    name: "📈 Parse Test Results"
     runs-on: ubuntu-latest
-
     steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: "📦 Install Robot Framework"
+      - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "🔍 Parse Test Results"
-        run: python functions/display_test_results.py ${{ inputs.test-results-path }}  # Call your Python script
+      - name: "📊 Parse Test Results"
+        run: python functions/display_test_results.py ${{ inputs.test-results-path }} report.md
+
+      - name: "📊 Display Test Results in GitHub Actions Summary"
+        run: cat report.md >> $GITHUB_STEP_SUMMARY
