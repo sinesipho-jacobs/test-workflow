@@ -1,8 +1,9 @@
+import os
 from robot.api import ExecutionResult, ResultVisitor
 import sys
 
 class MyResultVisitor(ResultVisitor):
-    def __init__(self, markdown_file='report.md'):
+    def __init__(self, markdown_file='webapp_tests/reports/report.md'):
         self.failed_tests = []
         self.passed_tests = []
         self.markdown_file = markdown_file
@@ -24,8 +25,12 @@ class MyResultVisitor(ResultVisitor):
                 f.write(f"| {test} | ❌ FAIL |\n")
 
 if __name__ == '__main__':
-    output_file = sys.argv[1] if len(sys.argv) > 1 else "output.xml"
-    markdown_file = sys.argv[2] if len(sys.argv) > 2 else "report.md"
-    
+    output_file = "webapp_tests/reports/output.xml"
+    markdown_file = "webapp_tests/reports/report.md"
+
+    if not os.path.exists(output_file):
+        print(f"⚠️ Error: Output file '{output_file}' not found. Skipping result parsing.")
+        sys.exit(1)
+
     result = ExecutionResult(output_file)
     result.visit(MyResultVisitor(markdown_file))
