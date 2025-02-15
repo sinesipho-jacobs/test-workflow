@@ -39,12 +39,7 @@ jobs:
 
     - name: Display test results in GitHub Summary
       if: always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs');
-          const reportMd = fs.readFileSync('report.md', 'utf8');
-
-          console.log(reportMd);
-          core.summary.addRaw(reportMd);
-          core.summary.write()
+      run: |
+        echo "### Test Results" >> ${{ inputs.markdown_file }}
+        echo "Test results are available [here](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_REF}/${{ inputs.markdown_file }})"
+        cat ${{ inputs.markdown_file }}
