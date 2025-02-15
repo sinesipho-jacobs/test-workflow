@@ -14,24 +14,32 @@ on:
 jobs:
   parse-results:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 📥 Download Test Results
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results
-          path: webapp_tests/robot-test-results
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: 🏗 Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+    - name: Download test results artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: robot-test-results
 
-      - name: 📜 Install Robot Framework
-        run: pip install robotframework
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
-      - name: 📊 Parse Robot Test Results
-        run: python functions/display_test_results.py webapp_tests/robot-test-results/output.xml report.md
+    - name: Install dependencies
+      run: |
+        pip install robotframework
 
-      - name: 📝 Display Test Summary in GitHub Actions UI
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
-        
+    - name: Parse Robot Framework results
+      run: |
+        python functions/display_test_results.py webapp_tests/robot_test_results/output.xml ${{ inputs.markdown_file }}
+
+    - name: Display test results in GitHub Summary
+      if: always()
+      run: |
+        echo "### Test Results" >> ${{ inputs.markdown_file }}
+        echo "Test results are available [here](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_REF}/${{ inputs.markdown_file }})"
+        cat ${{ inputs.markdown_file }}
