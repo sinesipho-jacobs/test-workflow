@@ -7,64 +7,48 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout Repository
+      - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
-      - name: 🐍 Set up Python
+      - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: 📜 Install Robot Framework
+      - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
-      - name: 🏗 Create Test Results Directory
+      - name: "📂 Create test results directory"
         run: mkdir -p webapp_tests/robot-test-results
 
-      - name: 🏃 Run Robot Framework Tests
+      - name: "🛠️ Run Robot Framework Tests"
         run: |
           robot --output webapp_tests/robot-test-results/output.xml webapp_tests/tests
 
-      - name: 📤 Upload Test Results
+      - name: "📤 Upload test results"
         uses: actions/upload-artifact@v4
         with:
           name: robot-test-results
-          path: webapp_tests/robot-test-results
+          path: webapp_tests/robot-test-results/output.xml
 
   parse-results:
     runs-on: ubuntu-latest
     needs: run-tests
     steps:
-      - name: 📥 Checkout Repository
+      - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
-      - name: 📥 Download Test Results
+      - name: "📥 Download Test Results"
         uses: actions/download-artifact@v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results
 
-      - name: 📂 List contents of the test results directory
-        run: ls -alh webapp_tests/robot-test-results
-
-      - name: ⚡ Check if output.xml exists
-        run: |
-          if [ ! -f webapp_tests/robot-test-results/output.xml ]; then
-            echo "❌ File 'output.xml' not found!"
-            exit 1
-          fi
-
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: 📜 Install Robot Framework
+      - name: "📜 Install Python Dependencies"
         run: pip install robotframework
 
-      - name: 🏃 Run Test Results Parsing Script
-        run: python functions/display_test_results.py webapp_tests/robot-test-results/output.xml report.md
+      - name: "📝 Parse Test Results"
+        run: python functions/display_test_results.py webapp_tests/robot-test-results/output.xml parsed_report.md
 
-      - name: 📝 Display Test Summary in GitHub UI
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
-        
+      - name: "📌 Display Test Summary"
+        run: cat parsed_report.md
