@@ -39,6 +39,12 @@ jobs:
 
     - name: Display test results in GitHub Summary
       if: always()
-      run: |
-          cat report.md
-          cat report.md >> $GITHUB_STEP_SUMMARY
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const reportMd = fs.readFileSync('report.md', 'utf8');
+
+          console.log(reportMd);
+          core.summary.addRaw(reportMd);
+          core.summary.write()
