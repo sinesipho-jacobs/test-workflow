@@ -78,5 +78,13 @@ jobs:
           echo "### 🏆 Test Results Summary" >> $GITHUB_STEP_SUMMARY
           cat report.md >> $GITHUB_STEP_SUMMARY
 
-      - name: 🔔 Show Summary in Job Logs
-        run: echo "::notice title=Test Results Summary::$(cat report.md)"
+      - name: "📝 Display Parsed Test Results"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const reportMd = fs.readFileSync('report.md', 'utf8');
+
+            console.log(reportMd);
+            core.summary.addRaw(reportMd);
+            core.summary.write();
