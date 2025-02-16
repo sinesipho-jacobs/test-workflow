@@ -33,7 +33,7 @@ jobs:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
 
-       - name: "⬇️ Download Test Results"
+      - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
           name: robot-test-results
