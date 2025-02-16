@@ -71,7 +71,7 @@ jobs:
         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
       - name: "📂 List contents of the test results directory"
-        run: ls -alh webapp_tests/robot-test-results
+        run: ls -alh webapp_tests/
 
 
       - name: "📑 Display parsed test results"
