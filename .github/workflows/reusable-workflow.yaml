@@ -46,6 +46,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
+
       - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
