@@ -79,6 +79,10 @@ jobs:
       - name: "📂 List contents of webapp_tests/robot-test-results/ after script"
         run: ls -alh webapp_tests/robot-test-results/
 
-        
       - name: "📑 Display parsed test results"
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
+        run: |
+          if [ -f webapp_tests/robot-test-results/report.md ]; then
+            cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
+          fi
