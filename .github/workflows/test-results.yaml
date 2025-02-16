@@ -10,3 +10,7 @@ jobs:
   call-tests:
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
 
+  call-other-tests:
+    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+
+
