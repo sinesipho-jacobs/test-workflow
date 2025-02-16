@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: "🐍 Run Test Results Parsing Script"
-        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+        run: python ./webapp_tests/functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
       - name: "📑 Display parsed test results"
         run: cat report.md >> $GITHUB_STEP_SUMMARY
