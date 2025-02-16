@@ -56,5 +56,8 @@ jobs:
             exit 1
           fi
 
+      - name: "🐍 Run Test Results Parsing Script"
+        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+
       - name: "📑 Display parsed test results"
-        run: cat webapp_tests/robot-test-results/output.xml >> $GITHUB_STEP_SUMMARY
+        run: cat report.md >> $GITHUB_STEP_SUMMARY
