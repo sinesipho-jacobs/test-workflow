@@ -8,7 +8,8 @@ on:
 
 jobs:
   parse-results:
-    uses: your-org/your-repo/.github/workflows/reusable-workflow.yaml@main  # Ensure correct repo & path
+    uses: sinesipho-jacobs/test-workflow/blob/main/.github/workflows/reusable-workflow.yaml@main  # Ensure correct repo & path
     with:
       some-input: some-value  # If needed, pass inputs
+      
     secrets: inherit  # If needed, inherit secrets
