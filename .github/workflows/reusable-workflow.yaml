@@ -57,8 +57,8 @@ jobs:
           fi
       - name: "🔍 Debug: Check if script exists"
         run: |
-          ls -lah webapp_tests/functions/
-          if [ -f webapp_tests/functions/display_test_results.py ]; then
+          ls -lah ./functions/
+          if [ -f ./functions/display_test_results.py ]; then
             echo "✅ Script found!"
           else
             echo "❌ Script NOT found!"
@@ -66,7 +66,7 @@ jobs:
           fi
 
       - name: "🐍 Run Test Results Parsing Script"
-        run: python ./webapp_tests/functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+        run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
       - name: "📑 Display parsed test results"
         run: cat report.md >> $GITHUB_STEP_SUMMARY
