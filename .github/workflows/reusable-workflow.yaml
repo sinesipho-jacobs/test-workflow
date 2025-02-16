@@ -69,6 +69,9 @@ jobs:
 
       - name: "📂 Show current working directory"
         run: pwd
+
+      - name: "📂 List contents of repository"
+        run: ls -alh
       
       - name: "🐍 Run Test Results Parsing Script"
         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/report.md
