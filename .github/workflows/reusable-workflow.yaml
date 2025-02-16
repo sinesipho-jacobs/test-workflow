@@ -38,6 +38,9 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
       - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
@@ -55,18 +58,12 @@ jobs:
             echo "❌ File 'output.xml' not found!"
             exit 1
           fi
+          
       - name: "🔍 Debug: Check if script exists"
-        run: |
-          ls -lah ./functions/
-          if [ -f ./functions/display_test_results.py ]; then
-            echo "✅ Script found!"
-          else
-            echo "❌ Script NOT found!"
-            exit 1
-          fi
+        run: ls -lah functions/
 
       - name: "🐍 Run Test Results Parsing Script"
-        run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
       - name: "📑 Display parsed test results"
         run: cat report.md >> $GITHUB_STEP_SUMMARY
