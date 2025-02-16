@@ -55,6 +55,15 @@ jobs:
             echo "❌ File 'output.xml' not found!"
             exit 1
           fi
+      - name: "🔍 Debug: Check if script exists"
+        run: |
+          ls -lah webapp_tests/functions/
+          if [ -f webapp_tests/functions/display_test_results.py ]; then
+            echo "✅ Script found!"
+          else
+            echo "❌ Script NOT found!"
+            exit 1
+          fi
 
       - name: "🐍 Run Test Results Parsing Script"
         run: python ./webapp_tests/functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
