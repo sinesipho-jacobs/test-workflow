@@ -1,10 +1,7 @@
-name: Run Robot Framework Tests and Parse Results
+name: Run Robot Framework Tests (Reusable)
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_call:  # This allows other workflows to call this one
 
 jobs:
   run-tests:
@@ -28,50 +25,36 @@ jobs:
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
-        continue-on-error: true  # Allow workflow to continue even if tests fail
+        continue-on-error: true  
 
       - name: "⬆️ Upload Test Results"
-        uses: actions/upload-artifact@v4  # Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
 
-  # parse-results:
-  #   needs: run-tests
-  #   if: always()  # Ensure this runs no matter what
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "📥 Checkout Repository"
-  #       uses: actions/checkout@v4
+  parse-results:
+    needs: run-tests
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: "⬇️ Download Test Results"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results
+          path: webapp_tests/robot-test-results/
 
-  #     - name: "🐍 Set up Python"
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: '3.9'
+      - name: "📂 List contents of the test results directory"
+        run: ls -alh webapp_tests/robot-test-results
 
-  #     - name: "📜 Install Robot Framework"
-  #       run: pip install robotframework  # 🔥 Fix: Install Robot Framework
-      
-  #     - name: "⬇️ Download Test Results"
-  #       uses: actions/download-artifact@v4  # Updated to v4
-  #       with:
-  #         name: robot-test-results
-  #         path: webapp_tests/robot-test-results/
+      - name: "📝 Check if output.xml exists"
+        run: |
+          if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
+            echo "✅ File 'output.xml' exists."
+          else
+            echo "❌ File 'output.xml' not found!"
+            exit 1
+          fi
 
-  #     - name: "📂 List contents of the test results directory"
-  #       run: ls -alh webapp_tests/robot-test-results
-
-  #     - name: "📝 Check if output.xml exists"
-  #       run: |
-  #         if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
-  #           echo "✅ File 'output.xml' exists."
-  #         else
-  #           echo "❌ File 'output.xml' not found!"
-  #           exit 1
-  #         fi
-
-  #     - name: "🐍 Run Test Results Parsing Script"
-  #       run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
-
-  #     - name: "📑 Display parsed test results"
-  #       run: cat report.md >> $GITHUB_STEP_SUMMARY
+      - name: "📑 Display parsed test results"
+        run: cat webapp_tests/robot-test-results/output.xml >> $GITHUB_STEP_SUMMARY
