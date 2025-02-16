@@ -8,5 +8,5 @@ on:
 
 jobs:
   call-tests:
-    uses: sinesipho-jacobs/test-workflow/blob/main/.github/workflows/reusable-workflow.yaml@main
+    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
 
