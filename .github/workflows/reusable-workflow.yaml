@@ -67,17 +67,15 @@ jobs:
       - name: "🔍 Debug: Check if script exists"
         run: ls -lah functions/
 
-      - name: "📂 Show current working directory"
-        run: pwd
-
-      - name: "📂 List contents of repository"
-        run: ls -alh
+      - name: "📂 List contents of webapp_tests/robot-test-results/"
+        run: ls -alh webapp_tests/robot-test-results/
       
       - name: "🐍 Run Test Results Parsing Script"
-        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/report.md
+        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md
       
-      - name: "🔍 Search for report.md"
-        run: find . -name "report.md"
+      - name: "📂 List contents of webapp_tests/robot-test-results/ after script"
+        run: ls -alh webapp_tests/robot-test-results/
+
         
       - name: "📑 Display parsed test results"
         run: cat report.md >> $GITHUB_STEP_SUMMARY
