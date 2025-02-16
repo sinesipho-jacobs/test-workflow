@@ -1,4 +1,4 @@
-name: Call Robot Framework Reusable Workflow
+name: Call Reusable Robot Test Workflow
 
 on:
   push:
@@ -9,3 +9,4 @@ on:
 jobs:
   call-tests:
     uses: sinesipho-jacobs/test-workflow/blob/main/.github/workflows/reusable-workflow.yaml@main
+
