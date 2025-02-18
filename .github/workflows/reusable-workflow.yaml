@@ -55,31 +55,22 @@ jobs:
           fi
 
   
-  display-results:
-    needs: run-tests
+  set_status:
     runs-on: ubuntu-latest
-    if: always()
+    permissions:
+      statuses: write 
     steps:
-      - name: "Download Report Markdown"
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-report # Download ONLY report.md
-
-      - name: "Add Report to Summary"
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const reportMarkdown = fs.readFileSync('report.md', 'utf8');
-
-            // Add a heading or title to your summary
-            core.summary.addHeading('Robot Framework Test Results'); 
-
-            core.summary.addRaw(reportMarkdown); // Add the report content
-
-            // Optionally, add a link to the full HTML report if you have it
-            // core.summary.addLink('Full HTML Report', 'path/to/report.html'); 
-
-            core.summary.write();
+      - name: Create status
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "state": "${{ github.event.workflow_run.conclusion }}",
+            "context": "unit test (kube)",
+            "target_url": "${{ github.event.workflow_run.html_url }}"
+            }' \
+          --fail
 
   
