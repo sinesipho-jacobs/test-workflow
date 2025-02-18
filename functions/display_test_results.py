@@ -28,29 +28,30 @@ class MyResultVisitor(ResultVisitor):
         elif test.status == 'PASS':
             self.passed_tests.append(test_info)
 
-    def end_result(self, result):
-            total_tests = len(self.passed_tests) + len(self.failed_tests)
-            passed_count = len(self.passed_tests)
-            failed_count = len(self.failed_tests)
-    
-            with open(self.markdown_file, "w") as f:
-                f.write("# Test Results Summary\n\n")
-                f.write(f"- 📊 **Total Tests:** {total_tests}\n")
-                f.write(f"- ✅ **Passed:** {passed_count}\n")
-                f.write(f"- ❌ **Failed:** {failed_count}\n\n")
-    
-                if total_tests > 0:
-                    f.write("## 📝 Detailed Test Results\n")
-                    f.write("| Test Name | File | Status | Message |\n")
-                    f.write("|-----------|------|--------|---------|\n")
-                    
-                    for test in self.passed_tests:
-                        f.write(f"| {test['name']} | {test['file']} | ✅ PASS | |\n")
-    
-                    for test in self.failed_tests:
-                        f.write(f"| {test['name']} | {test['file']} | ❌ FAIL | {test['message']} |\n")
+   def end_result(self, result):
+        total_tests = len(self.passed_tests) + len(self.failed_tests)
+        passed_count = len(self.passed_tests)
+        failed_count = len(self.failed_tests)
+
+        with open(self.markdown_file, "w") as f:
+            f.write("# Test Results Summary\n\n")
+            f.write(f"- 📊 **Total Tests:** {total_tests}\n")
+            f.write(f"- ✅ **Passed:** {passed_count}\n")
+            f.write(f"- ❌ **Failed:** {failed_count}\n\n")
+
+            if total_tests > 0:
+                f.write("## 📝 Detailed Test Results\n")
+                f.write("| Test Name | File | Status | Message |\n")
+                f.write("|-----------|------|--------|---------|\n")
+                
+                for test in self.passed_tests:
+                    f.write(f"| {test['name']} | {test['file']} | ✅ PASS | |\n")
+
+                for test in self.failed_tests:
+                    f.write(f"| {test['name']} | {test['file']} | ❌ FAIL | {test['message']} |\n")
 
         print(f"📄 Report generated: {self.markdown_file}")
+
 
 if __name__ == '__main__':
     try:
