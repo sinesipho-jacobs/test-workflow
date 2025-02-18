@@ -55,42 +55,23 @@ jobs:
           fi
 
   
-#   post-check-run:
-#     runs-on: ubuntu-latest
-#     needs: run-tests
-#     steps:
-#       - name: "📥 Checkout Repository"
-#         uses: actions/checkout@v4
-  
-#       - name: "🐍 Set up Python"
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.9'
-  
-#       - name: "📤 Post Check Run using Python script"
-#         run: |
-#           if [ "${{ needs.run-tests.result }}" == "failure" ]; then
-#             echo "CONCLUSION=failure" >> $GITHUB_ENV
-#             echo "SUMMARY=Some tests failed. Check logs." >> $GITHUB_ENV
-#           else
-#             echo "CONCLUSION=success" >> $GITHUB_ENV
-#             echo "SUMMARY=All tests passed successfully!" >> $GITHUB_ENV
-#           fi
-  
-#           # Run Python script
-#           python functions/post_github_check.py
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           GITHUB_SHA: ${{ github.sha }}
-#           GITHUB_REPOSITORY: ${{ github.repository }}
-#           CONCLUSION: ${{ env.CONCLUSION }}
-#           SUMMARY: ${{ env.SUMMARY }}
-# #testing
-  
-#       - name: "🚨 Fail job if tests failed"
-#         run: |
-#           if [ "${{ needs.run-tests.result }}" == "failure" ]; then
-#             echo "Tests failed! Marking this job as failed."
-#             exit 1
-#           fi
+  display-results:  # New job for displaying results
+    needs: run-tests # Crucial: Depends on run-tests
+    runs-on: ubuntu-latest
+    if: always() # Ensure this job runs even if tests fail
+    steps:
+      - uses: actions/checkout@v4 # Needed to access report.md
+      - name: "⬇️ Download Test Results"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results
+          path: webapp_tests/robot-test-results/
+      - name: "📑 Display parsed test results"
+        run: |
+          if [ -f webapp_tests/robot-test-results/report.md ]; then
+            cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
+          fi
+
   
