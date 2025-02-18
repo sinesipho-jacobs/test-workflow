@@ -19,51 +19,42 @@ jobs:
         run: pip install robotframework
 
       - name: "🚀 Run Robot Framework Tests"
+        id: run_tests
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
-        continue-on-error: true  
+          # Check if any tests failed
+          if grep -q "FAIL" webapp_tests/robot-test-results/output.xml; then
+            echo "Test failed!"
+            echo "test_failed=true" >> $GITHUB_ENV
+          else
+            echo "Test passed!"
+            echo "test_failed=false" >> $GITHUB_ENV
+          fi
 
       - name: "⬆️ Upload Test Results"
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
 
       - name: "⬇️ Download Test Results"
+        if: always()
         uses: actions/download-artifact@v4
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
-
-      - name: "📂 List contents of the test results directory"
-        run: ls -alh webapp_tests/robot-test-results
-
-      - name: "📝 Check if output.xml exists"
-        run: |
-          if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
-            echo "✅ File 'output.xml' exists."
-          else
-            echo "❌ File 'output.xml' not found!"
-            exit 1
-          fi
-          
-      - name: "🔍 Debug: Check if script exists"
-        run: ls -lah functions/
-
-      - name: "📂 List contents of webapp_tests/robot-test-results/"
-        run: ls -alh webapp_tests/robot-test-results/
       
       - name: "🐍 Run Test Results Parsing Script"
+        if: always()
         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md
-      
-      - name: "📂 List contents of webapp_tests/robot-test-results/ after script"
-        run: ls -alh webapp_tests/robot-test-results/
 
       - name: "📑 Display parsed test results"
+        if: always()
         run: |
           if [ -f webapp_tests/robot-test-results/report.md ]; then
             cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
@@ -72,56 +63,45 @@ jobs:
           fi
 
 
-  # parse-results:
-  #   needs: run-tests
-  #   if: always()
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "📥 Checkout Repository"
-  #       uses: actions/checkout@v4
-
-  #     - name: "🐍 Set up Python"
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: '3.9'
-
-  #     - name: "📜 Install Robot Framework"
-  #       run: pip install robotframework
-
-  #     - name: "⬇️ Download Test Results"
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: robot-test-results
-  #         path: webapp_tests/robot-test-results/
-
-  #     - name: "📂 List contents of the test results directory"
-  #       run: ls -alh webapp_tests/robot-test-results
-
-  #     - name: "📝 Check if output.xml exists"
-  #       run: |
-  #         if [ -f ./webapp_tests/robot-test-results/output.xml ]; then
-  #           echo "✅ File 'output.xml' exists."
-  #         else
-  #           echo "❌ File 'output.xml' not found!"
-  #           exit 1
-  #         fi
-          
-  #     - name: "🔍 Debug: Check if script exists"
-  #       run: ls -lah functions/
-
-  #     - name: "📂 List contents of webapp_tests/robot-test-results/"
-  #       run: ls -alh webapp_tests/robot-test-results/
-      
-  #     - name: "🐍 Run Test Results Parsing Script"
-  #       run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md
-      
-  #     - name: "📂 List contents of webapp_tests/robot-test-results/ after script"
-  #       run: ls -alh webapp_tests/robot-test-results/
-
-  #     - name: "📑 Display parsed test results"
-  #       run: |
-  #         if [ -f webapp_tests/robot-test-results/report.md ]; then
-  #           cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
-  #         else
-  #           echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
-  #         fi
+  post-check-run:
+      runs-on: ubuntu-latest
+      needs: run-tests
+      steps:
+        - name: "📥 Checkout Repository"
+          uses: actions/checkout@v4
+  
+        - name: "📤 Post Check Run to GitHub"
+          run: |
+            # Define variables for the check run
+            CONCLUSION="success"
+            SUMMARY="All tests passed successfully!"
+            
+            # Check the environment variable set during the test step
+            if [ "${{ env.test_failed }}" == "true" ]; then
+              CONCLUSION="failure"
+              SUMMARY="Some tests failed. Check the logs for details."
+            fi
+  
+            # Post the check run to GitHub
+            curl -X POST https://api.github.com/repos/${{ github.repository }}/check-runs \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d '{
+                    "name": "Robot Framework Test Run",
+                    "head_sha": "${{ github.sha }}",
+                    "status": "completed",
+                    "conclusion": "'$CONCLUSION'",
+                    "output": {
+                      "title": "Test Results Summary",
+                      "summary": "'$SUMMARY'"
+                    }
+                  }'
+  
+        - name: "📝 Set job conclusion based on check result"
+          run: |
+            if [ "${{ env.test_failed }}" == "true" ]; then
+              echo "Job failed due to test failure"
+              exit 1
+            else
+              echo "Job passed"
+            fi
