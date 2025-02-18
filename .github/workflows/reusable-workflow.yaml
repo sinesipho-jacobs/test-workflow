@@ -1,26 +1,12 @@
 name: Run Robot Framework Tests (Reusable)
 
 on:
-  workflow_call:  # Allows other workflows to call this one
+  workflow_call:  # This allows other workflows to call this one
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: "📡 Set Commit Status - Pending"
-        run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data '{
-            "state": "pending",
-            "context": "Robot Framework Tests",
-            "description": "Tests are running...",
-            "target_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          }' \
-          --fail
-
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
 
@@ -54,7 +40,7 @@ jobs:
         with:
           name: robot-test-results
           path: webapp_tests/robot-test-results/
-
+      
       - name: "🐍 Run Test Results Parsing Script"
         if: always()
         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md
@@ -67,83 +53,3 @@ jobs:
           else
             echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
           fi
-
-      - name: "📡 Set Commit Status - Success or Failure"
-        if: always()
-        run: |
-          STATUS="failure"
-          if [ "${{ job.status }}" == "success" ]; then
-            STATUS="success"
-          elif [ "${{ job.status }}" == "cancelled" ]; then
-            STATUS="cancelled"
-          fi
-          
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data "{
-            \"state\": \"${STATUS}\",
-            \"context\": \"Robot Framework Tests\",
-            \"description\": \"Tests completed with status: ${STATUS}\",
-            \"target_url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-          }" \
-          --fail
-
-
-
-# name: Run Robot Framework Tests (Reusable)
-
-# on:
-#   workflow_call:  # This allows other workflows to call this one
-
-# jobs:
-#   run-tests:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: "📥 Checkout Repository"
-#         uses: actions/checkout@v4
-
-#       - name: "🐍 Set up Python"
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.9'
-
-#       - name: "📜 Install Robot Framework"
-#         run: pip install robotframework
-
-#       - name: "🚀 Run Robot Framework Tests"
-#         run: |
-#           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
-#           robot --output webapp_tests/robot-test-results/output.xml \
-#                  --log webapp_tests/robot-test-results/log.html \
-#                  --report webapp_tests/robot-test-results/report.html \
-#                  webapp_tests/tests/
-#         continue-on-error: true
-
-#       - name: "⬆️ Upload Test Results"
-#         if: always()
-#         uses: actions/upload-artifact@v4
-#         with:
-#           name: robot-test-results
-#           path: webapp_tests/robot-test-results/
-
-#       - name: "⬇️ Download Test Results"
-#         if: always()
-#         uses: actions/download-artifact@v4
-#         with:
-#           name: robot-test-results
-#           path: webapp_tests/robot-test-results/
-      
-#       - name: "🐍 Run Test Results Parsing Script"
-#         if: always()
-#         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md
-
-#       - name: "📑 Display parsed test results"
-#         if: always()
-#         run: |
-#           if [ -f webapp_tests/robot-test-results/report.md ]; then
-#             cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
-#           else
-#             echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
-#           fi
