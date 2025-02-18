@@ -65,6 +65,7 @@ jobs:
 
   post-check-run:
       runs-on: ubuntu-latest
+      if: always()
       needs: run-tests
       steps:
         - name: "📥 Checkout Repository"
