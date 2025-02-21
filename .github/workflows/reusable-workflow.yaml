@@ -2,6 +2,12 @@ name: Run Robot Framework Tests (Reusable)
 
 on:
   workflow_call:  # This allows other workflows to call this one
+    inputs:
+      type: 
+        description: "Web App Tests(web) or API Tests(api)"
+        required: true
+        type: string
+        default: "web"
 
 jobs:
   run-tests:
@@ -19,6 +25,7 @@ jobs:
         run: pip install robotframework
 
       - name: "🚀 Run Web Robot Framework Tests"
+        if: ${{ inputs.type == 'web' }}
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/output.xml \
@@ -27,6 +34,7 @@ jobs:
                  webapp_tests/tests/
                  
       - name: "🚀 Run API Robot Framework Tests"
+        if: ${{ inputs.type == 'api' }}
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/output.xml \
