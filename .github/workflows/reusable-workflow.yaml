@@ -18,14 +18,21 @@ jobs:
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
-      - name: "🚀 Run Robot Framework Tests"
+      - name: "🚀 Run Web Robot Framework Tests"
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
-        continue-on-error: true
+                 
+      - name: "🚀 Run API Robot Framework Tests"
+        run: |
+          mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
+          robot --output webapp_tests/robot-test-results/output.xml \
+                 --log webapp_tests/robot-test-results/log.html \
+                 --report webapp_tests/robot-test-results/report.html \
+                 webapp_tests/tests/
 
       - name: "⬆️ Upload Test Results"
         if: always()
