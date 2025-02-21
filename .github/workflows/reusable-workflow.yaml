@@ -78,6 +78,7 @@ jobs:
 
   merge-test-results:
     runs-on: ubuntu-latest
+    if: always()
     needs: run-tests
     steps:
       - name: Checkout repository
