@@ -46,7 +46,7 @@ jobs:
         if: ${{ inputs.type == 'all' }} || always()
         shell: bash
         run: |
-          robot rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/api_output.xml webapp_tests/robot-test-results/web_output.xml
+          rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/api_output.xml webapp_tests/robot-test-results/web_output.xml
 
       - name: "⬆️ Upload Test Results"
         if: always()
