@@ -28,7 +28,7 @@ jobs:
         if: ${{ inputs.type == 'web' }}
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
-          robot --output webapp_tests/robot-test-results/output.xml \
+          robot --output webapp_tests/robot-test-results/${{ inputs.type }}_output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
@@ -37,7 +37,7 @@ jobs:
         if: ${{ inputs.type == 'api' }}
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
-          robot --output webapp_tests/robot-test-results/output.xml \
+          robot --output webapp_tests/robot-test-results/${{ inputs.type }}_output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/api/
