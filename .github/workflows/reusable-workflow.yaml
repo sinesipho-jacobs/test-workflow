@@ -43,7 +43,7 @@ jobs:
                  webapp_tests/api/
 
       - name: "Merge Test Results"
-        if: ${{ inputs.type == 'all' }} || always()
+        if: always()
         shell: bash
         run: |
           rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/api_output.xml webapp_tests/robot-test-results/web_output.xml
