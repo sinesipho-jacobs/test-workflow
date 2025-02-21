@@ -7,7 +7,14 @@ on:
   pull_request:
 
 jobs:
-  call-tests:
+  call-web-tests:
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+    with:
+      type: web
+
+  call-api-tests:
+    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+    with:
+      type: api
 
 
