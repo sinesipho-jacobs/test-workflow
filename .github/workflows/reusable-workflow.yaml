@@ -34,7 +34,7 @@ jobs:
                  webapp_tests/tests/
                  
       - name: "🚀 Run API Robot Framework Tests"
-        if: ${{ inputs.type == 'api' }}
+        if: ${{ inputs.type == 'api' || always()}}
         run: |
           mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
           robot --output webapp_tests/robot-test-results/${{ inputs.type }}_output.xml \
