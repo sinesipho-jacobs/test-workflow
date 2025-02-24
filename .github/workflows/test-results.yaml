@@ -17,31 +17,31 @@ jobs:
     with:
       type: api
 
-  # merge-test-results:
-  #   runs-on: ubuntu-latest
-  #   if: always()
-  #   needs: [call-web-tests, call-api-tests]  # This ensures it runs after both test jobs
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
+  merge-test-results:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [call-web-tests, call-api-tests]  # This ensures it runs after both test jobs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-  #     - name: "⬇️ Download Web Test Results"
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: robot-test-results-web
-  #         path: webapp_tests/robot-test-results
+      - name: "⬇️ Download Web Test Results"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results-web
+          path: webapp_tests/robot-test-results
 
-  #     - name: "⬇️ Download API Test Results"
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: robot-test-results-api
-  #         path: webapp_tests/robot-test-results
+      - name: "⬇️ Download API Test Results"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results-api
+          path: webapp_tests/robot-test-results
 
-  #     - name: "📜 Install Robot Framework"
-  #       run: pip install robotframework
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
 
-  #     - name: Debug - List Test Results Directory
-  #       run: ls -lah webapp_tests/robot-test-results
+      - name: Debug - List Test Results Directory
+        run: ls -lah webapp_tests/robot-test-results
 
 
   #     - name: Merge Test Results
