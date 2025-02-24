@@ -58,6 +58,14 @@ jobs:
       - name: Debug - List Test Results Directory
         if: always()
         run: ls -lah webapp_tests/robot-test-results
+
+      - name: "🐍 Run Test Results Parsing Script"
+        if: always()
+        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+
+      - name: "📑 Display parsed test results"
+        if: always()
+        run: cat report.md >> $GITHUB_STEP_SUMMARY
       # - name: Merge Test Results
       #   run: |
       #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
