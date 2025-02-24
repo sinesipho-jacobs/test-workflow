@@ -49,6 +49,13 @@ jobs:
           name: robot-test-results-${{ inputs.type }}
           path: webapp_tests/robot-test-results/${{ inputs.type }}_output.xml
 
+      - name: "Merge Test Results"
+        if: always()
+        shell: bash
+        run: |
+          rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/api_output.xml webapp_tests/robot-test-results/web_output.xml
+
+
 
       # - name: "Merge Test Results"
       #   if: always()
