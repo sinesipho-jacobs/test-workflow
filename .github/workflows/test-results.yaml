@@ -27,6 +27,9 @@ jobs:
   
         - name: "📜 Install Robot Framework"
           run: pip install robotframework
+
+        - name: List files in directory (detailed)
+          run: ls -lah webapp_tests/robot-test-results
   
         - name: Merge Test Results
           run: |
