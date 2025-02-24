@@ -53,7 +53,7 @@ jobs:
 
       - name: Merge Test Results
         run: |
-          rebot -v --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
+          rebot --verbose --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
 
       # - name: Merge Test Results
       #   run: |
