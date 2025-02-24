@@ -36,19 +36,15 @@ class MyResultVisitor(ResultVisitor):
             f.write(f"- ✅ **Passed:** {passed_count}\n")
             f.write(f"- ❌ **Failed:** {failed_count}\n\n")
 
-            if passed_count > 0:
-                f.write("## ✅ Passed Tests\n")
-                f.write("| Test Name | File | Status |\n")
-                f.write("|-----------|--------|--------|\n")
+           if total_tests > 0:
+                f.write("| Test Name | File | Status | Message |\n")
+                f.write("|-----------|------|--------|---------|\n")
+                
                 for test in self.passed_tests:
-                    f.write(f"| {test['name']} | {test['file']} | ✅ PASS |\n")
+                    f.write(f"| {test['name']} | {test['file']} | ✅ PASS | |\n")
 
-            if failed_count > 0:
-                f.write("\n## ❌ Failed Tests\n")
-                f.write("| Test Name | File | Failure Message | Line No. |\n")
-                f.write("|-----------|--------|----------------|---------|\n")
                 for test in self.failed_tests:
-                    f.write(f"| {test['name']} | {test['file']} | {test['message']} | {test['lineno']} |\n")
+                    f.write(f"| {test['name']} | {test['file']} | ❌ FAIL | {test['message']} |\n")
 
         print(f"📄 Report generated: {self.markdown_file}")
 
