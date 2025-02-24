@@ -16,5 +16,41 @@ jobs:
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: api
-
+      
+  merge-test-results:
+      runs-on: ubuntu-latest
+      if: always()
+      needs: [call-web-tests, call-api-tests]  # ✅ Now it correctly references the actual jobs
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+  
+        - name: "📜 Install Robot Framework"
+          run: pip install robotframework
+  
+        - name: Merge Test Results
+          run: |
+            rebot --output webapp_tests/robot-test-results/output.xml \
+                  webapp_tests/robot-test-results/api_output.xml \
+                  webapp_tests/robot-test-results/web_output.xml
+  
+        - name: "⬆️ Upload Test Results"
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: robot-test-results
+            path: webapp_tests/robot-test-results/output.xml
+  
+        - name: "🐍 Run Test Results Parsing Script"
+          if: always()
+          run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md all
+  
+        - name: "📑 Display parsed test results"
+          if: always()
+          run: |
+            if [ -f webapp_tests/robot-test-results/report.md ]; then
+              cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
+            fi
 
