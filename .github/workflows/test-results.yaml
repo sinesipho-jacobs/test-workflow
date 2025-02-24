@@ -43,13 +43,20 @@ jobs:
       - name: Debug - List Test Results Directory
         run: ls -lah webapp_tests/robot-test-results
 
+      - name: Merge Test Results
+        run: |
+          if [[ -n "$(ls webapp_tests/robot-test-results/*.xml 2>/dev/null)" ]]; then
+            rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/test-results/*.xml
+          else
+            echo "No XML files found in webapp_tests/test-results/."
+          fi
 
-  #     - name: Merge Test Results
-  #       run: |
-  #         if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
-  #           rebot --output webapp_tests/robot-test-results/output.xml \
-  #                 webapp_tests/robot-test-results/api_output.xml \
-  #                 webapp_tests/robot-test-results/web_output.xml
+      # - name: Merge Test Results
+      #   run: |
+      #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
+      #       rebot --output webapp_tests/robot-test-results/output.xml \
+      #             webapp_tests/robot-test-results/api_output.xml \
+      #             webapp_tests/robot-test-results/web_output.xml
   #         else
   #           echo "❌ One or more output files are missing!"
   #           ls -lah webapp_tests/robot-test-results  # Show what exists for debugging
