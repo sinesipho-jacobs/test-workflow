@@ -46,9 +46,9 @@ jobs:
       - name: Merge Test Results
         run: |
           if [[ -n "$(ls webapp_tests/robot-test-results/*.xml 2>/dev/null)" ]]; then
-            rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/test-results/*.xml
+            rebot --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
           else
-            echo "No XML files found in webapp_tests/test-results/."
+            echo "No XML files found in webapp_tests/robot-test-results/."
           fi
 
       # - name: Merge Test Results
