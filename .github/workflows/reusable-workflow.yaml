@@ -76,47 +76,46 @@ jobs:
       #       echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
       #     fi
 
-  merge-test-results:
-    runs-on: ubuntu-latest
-    if: always()
-    needs: run-tests
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  # merge-test-results:
+  #   runs-on: ubuntu-latest
+  #   if: always()
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: "📜 Install Robot Framework"
-        run: pip install robotframework
+  #     - name: "📜 Install Robot Framework"
+  #       run: pip install robotframework
 
-      - name: Merge Test Results
-        run: |
-          rebot --output webapp_tests/robot-test-results/output.xml \
-                webapp_tests/robot-test-results/api_output.xml \
-                webapp_tests/robot-test-results/web_output.xml
+  #     - name: Merge Test Results
+  #       run: |
+  #         rebot --output webapp_tests/robot-test-results/output.xml \
+  #               webapp_tests/robot-test-results/api_output.xml \
+  #               webapp_tests/robot-test-results/web_output.xml
 
-      - name: "⬆️ Upload Test Results"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: robot-test-results
-          path: webapp_tests/robot-test-results/output.xml
+  #     - name: "⬆️ Upload Test Results"
+  #       if: always()
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: robot-test-results
+  #         path: webapp_tests/robot-test-results/output.xml
 
-      - name: "⬇️ Download Test Results"
-        if: always()
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results
-          path: webapp_tests/robot-test-results/output.xml
+  #     - name: "⬇️ Download Test Results"
+  #       if: always()
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: robot-test-results
+  #         path: webapp_tests/robot-test-results/output.xml
       
-      - name: "🐍 Run Test Results Parsing Script"
-        if: always()
-        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md \ all
+  #     - name: "🐍 Run Test Results Parsing Script"
+  #       if: always()
+  #       run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/report.md \ all
               
 
-      - name: "📑 Display parsed test results"
-        if: always()
-        run: |
-          if [ -f webapp_tests/robot-test-results/report.md ]; then
-            cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
-          fi
+  #     - name: "📑 Display parsed test results"
+  #       if: always()
+  #       run: |
+  #         if [ -f webapp_tests/robot-test-results/report.md ]; then
+  #           cat webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
+  #         else
+  #           echo "❌ Report not found!" >> $GITHUB_STEP_SUMMARY
+  #         fi
