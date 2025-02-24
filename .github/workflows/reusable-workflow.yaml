@@ -1,9 +1,9 @@
 name: Run Robot Framework Tests (Reusable)
 
 on:
-  workflow_call:  # This allows other workflows to call this one
+  workflow_call:
     inputs:
-      type: 
+      type:
         description: "Web App Tests(web) or API Tests(api)"
         required: true
         type: string
@@ -27,20 +27,28 @@ jobs:
       - name: "🚀 Run Web Robot Framework Tests"
         if: ${{ inputs.type == 'web' }}
         run: |
-          mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
-          robot --output webapp_tests/robot-test-results/${{ inputs.type }}_output.xml \
+          mkdir -p webapp_tests/robot-test-results
+          robot --output webapp_tests/robot-test-results/web_output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/tests/
                  
       - name: "🚀 Run API Robot Framework Tests"
-        if: ${{ inputs.type == 'api'}}
+        if: ${{ inputs.type == 'api' }}
         run: |
-          mkdir -p webapp_tests/robot-test-results  # Ensure directory exists
-          robot --output webapp_tests/robot-test-results/${{ inputs.type }}_output.xml \
+          mkdir -p webapp_tests/robot-test-results
+          robot --output webapp_tests/robot-test-results/api_output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/api/
+
+      - name: "⬆️ Upload Test Results"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-test-results-${{ inputs.type }}
+          path: webapp_tests/robot-test-results/${{ inputs.type }}_output.xml
+
 
       # - name: "Merge Test Results"
       #   if: always()
