@@ -53,8 +53,9 @@ jobs:
 
       - name: Merge Test Results
         run: |
-          rebot --verbose --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
+          rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
 
+    
       # - name: Merge Test Results
       #   run: |
       #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
