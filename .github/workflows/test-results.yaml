@@ -55,7 +55,9 @@ jobs:
         run: |
           rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
 
-    
+      - name: Debug - List Test Results Directory
+        if: always()
+        run: ls -lah webapp_tests/robot-test-results
       # - name: Merge Test Results
       #   run: |
       #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
