@@ -8,12 +8,12 @@ on:
 
 jobs:
   call-web-tests:
-    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-tests.yaml@main
+    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: web
 
   call-api-tests:
-    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-tests.yaml@main
+    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: api
 
