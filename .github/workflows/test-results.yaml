@@ -29,7 +29,7 @@ jobs:
           run: pip install robotframework
 
         - name: List files in directory (detailed)
-          run: ls -lah webapp_tests
+          run: ls -lah webapp_tests/tests
   
         - name: Merge Test Results
           run: |
