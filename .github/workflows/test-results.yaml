@@ -43,6 +43,11 @@ jobs:
       - name: Debug - List Test Results Directory
         run: ls -lah webapp_tests/robot-test-results
 
+      - name: Validate XML Files
+        run: |
+          xmllint --noout webapp_tests/robot-test-results/api_output.xml
+          xmllint --noout webapp_tests/robot-test-results/web_output.xml
+
       - name: Merge Test Results
         run: |
           if [[ -n "$(ls webapp_tests/robot-test-results/*.xml 2>/dev/null)" ]]; then
