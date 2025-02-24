@@ -40,6 +40,10 @@ jobs:
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
+      - name: Debug - List Test Results Directory
+        run: ls -lah webapp_tests/robot-test-results
+
+
       - name: Merge Test Results
         run: |
           if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
