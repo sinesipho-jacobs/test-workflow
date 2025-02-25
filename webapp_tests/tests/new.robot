@@ -5,5 +5,5 @@ Library    OperatingSystem
 *** Test Cases ***
 Test Case 1 - Passing Test
     [Documentation]    This test should pass.
-    Should Be Equal    2 + 2    4
+    Should Be Equal    2 + 3    5
 
