@@ -54,11 +54,11 @@ class MyResultVisitor(ResultVisitor):
 
                     for test in self.passed_tests:
                         if test["file"] == file:
-                            f.write(f"| {test['name']} | ✅ PASS | |\n")
+                            f.write(f"| {test['name']} | {test['file']} | ✅ PASS | |\n")
 
                     for test in self.failed_tests:
                         if test["file"] == file:
-                            f.write(f"| {test['name']} | ❌ FAIL | {test['message']} |\n")
+                            f.write(f"| {test['name']} | {test['file']} | ❌ FAIL | {test['message']} |\n")
 
                 f.write("\n---\n")  # Add a separator between test files
 
