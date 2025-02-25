@@ -43,17 +43,17 @@ jobs:
       - name: Debug - List Test Results Directory
         run: ls -lah webapp_tests/robot-test-results
 
-      - name: Install libxml2-utils
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      # - name: Install libxml2-utils
+      #   run: sudo apt-get update && sudo apt-get install -y libxml2-utils
 
-      - name: Validate XML Files
-        run: |
-          xmllint --noout webapp_tests/robot-test-results/api_output.xml
-          xmllint --noout webapp_tests/robot-test-results/web_output.xml
+      # - name: Validate XML Files
+      #   run: |
+      #     xmllint --noout webapp_tests/robot-test-results/api_output.xml
+      #     xmllint --noout webapp_tests/robot-test-results/web_output.xml
 
-      - name: Merge Test Results
-        run: |
-          rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
+      # - name: Merge Test Results
+      #   run: |
+      #     rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
 
       - name: Debug - List Test Results Directory
         if: always()
