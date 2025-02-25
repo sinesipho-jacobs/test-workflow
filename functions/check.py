@@ -17,7 +17,7 @@ def get_env_variable(name):
 
 def post_github_check(results, report_content):
     """Post test results as a GitHub check run."""
-    github_token = get_env_variable("GITHUB_TOKEN")
+    # github_token = get_env_variable("GITHUB_TOKEN")
     repository = get_env_variable("GITHUB_REPOSITORY")
     commit_sha = get_env_variable("GITHUB_SHA")
     job_name = os.getenv("GITHUB_JOB", "Unknown Job")
@@ -26,14 +26,13 @@ def post_github_check(results, report_content):
     # if caller_job_name:
     #     job_name = caller_job_name  # Override with actual job name
 
-    if not all([github_token, repository, commit_sha]):
+    if not all([repository, commit_sha]):
         print("Error: Missing required environment variables. Exiting...")
         return
 
     api_url = f"https://api.github.com/repos/{repository}/check-runs"
     headers = {
         "Accept": "application/vnd.github.v3+json",
-        "Authorization": f"Bearer {github_token}",
         "Content-Type": "application/json"
     }
 
