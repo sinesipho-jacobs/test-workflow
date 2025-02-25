@@ -17,62 +17,62 @@ jobs:
     with:
       type: api
 
-  merge-test-results:
-    runs-on: ubuntu-latest
-    if: always()
-    needs: [call-web-tests, call-api-tests]  # This ensures it runs after both test jobs
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  # merge-test-results:
+  #   runs-on: ubuntu-latest
+  #   if: always()
+  #   needs: [call-web-tests, call-api-tests]  # This ensures it runs after both test jobs
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: "⬇️ Download Web Test Results"
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results-web
-          path: webapp_tests/robot-test-results
+  #     - name: "⬇️ Download Web Test Results"
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: robot-test-results-web
+  #         path: webapp_tests/robot-test-results
 
-      - name: "⬇️ Download API Test Results"
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results-api
-          path: webapp_tests/robot-test-results
+  #     - name: "⬇️ Download API Test Results"
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: robot-test-results-api
+  #         path: webapp_tests/robot-test-results
 
-      - name: "📜 Install Robot Framework"
-        run: pip install robotframework
+  #     - name: "📜 Install Robot Framework"
+  #       run: pip install robotframework
 
-      - name: Debug - List Test Results Directory
-        run: ls -lah webapp_tests/robot-test-results
+  #     - name: Debug - List Test Results Directory
+  #       run: ls -lah webapp_tests/robot-test-results
 
-      # - name: Install libxml2-utils
-      #   run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+  #     # - name: Install libxml2-utils
+  #     #   run: sudo apt-get update && sudo apt-get install -y libxml2-utils
 
-      # - name: Validate XML Files
-      #   run: |
-      #     xmllint --noout webapp_tests/robot-test-results/api_output.xml
-      #     xmllint --noout webapp_tests/robot-test-results/web_output.xml
+  #     # - name: Validate XML Files
+  #     #   run: |
+  #     #     xmllint --noout webapp_tests/robot-test-results/api_output.xml
+  #     #     xmllint --noout webapp_tests/robot-test-results/web_output.xml
 
-      # - name: Merge Test Results
-      #   run: |
-      #     rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
+  #     # - name: Merge Test Results
+  #     #   run: |
+  #     #     rebot --loglevel DEBUG --output webapp_tests/robot-test-results/output.xml webapp_tests/robot-test-results/*.xml
 
-      - name: Debug - List Test Results Directory
-        if: always()
-        run: ls -lah webapp_tests/robot-test-results
+  #     - name: Debug - List Test Results Directory
+  #       if: always()
+  #       run: ls -lah webapp_tests/robot-test-results
 
-      - name: "🐍 Run Test Results Parsing Script"
-        if: always()
-        run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+  #     - name: "🐍 Run Test Results Parsing Script"
+  #       if: always()
+  #       run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
-      - name: "📑 Display parsed test results"
-        if: always()
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
+  #     - name: "📑 Display parsed test results"
+  #       if: always()
+  #       run: cat report.md >> $GITHUB_STEP_SUMMARY
 
-      - name: "📊 Parse Test Results and Post to GitHub"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
-        run: python functions/check.py
+  #     - name: "📊 Parse Test Results and Post to GitHub"
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GITHUB_REPOSITORY: ${{ github.repository }}
+  #         GITHUB_SHA: ${{ github.sha }}
+  #       run: python functions/check.py
       # - name: Merge Test Results
       #   run: |
       #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
