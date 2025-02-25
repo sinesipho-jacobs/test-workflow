@@ -21,10 +21,10 @@ def post_github_check(results, report_content):
     repository = get_env_variable("GITHUB_REPOSITORY")
     commit_sha = get_env_variable("GITHUB_SHA")
     job_name = os.getenv("GITHUB_JOB", "Unknown Job")
-    caller_job_name = get_env_variable("JOB_NAME")
+    # caller_job_name = get_env_variable("JOB_NAME")
 
-    if caller_job_name:
-        job_name = caller_job_name  # Override with actual job name
+    # if caller_job_name:
+    #     job_name = caller_job_name  # Override with actual job name
 
     if not all([github_token, repository, commit_sha]):
         print("Error: Missing required environment variables. Exiting...")
