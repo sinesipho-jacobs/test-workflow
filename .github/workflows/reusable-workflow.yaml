@@ -52,13 +52,7 @@ jobs:
       - name: "⬇️ Download Web Test Results"
         uses: actions/download-artifact@v4
         with:
-          name: robot-test-results-web
-          path: webapp_tests/robot-test-results
-
-      - name: "⬇️ Download API Test Results"
-        uses: actions/download-artifact@v4
-        with:
-          name: robot-test-results-api
+          name: robot-test-results-${{ inputs.type }}
           path: webapp_tests/robot-test-results
 
       - name: "🐍 Run Test Results Parsing Script"
