@@ -31,7 +31,7 @@ jobs:
           robot --output webapp_tests/robot-test-results/output.xml \
                  --log webapp_tests/robot-test-results/log.html \
                  --report webapp_tests/robot-test-results/report.html \
-                 webapp_tests/test/
+                 webapp_tests/tests/
                  
       - name: "🚀 Run API Robot Framework Tests"
         if: ${{ inputs.type == 'api' }}
