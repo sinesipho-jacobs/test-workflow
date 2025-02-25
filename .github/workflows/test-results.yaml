@@ -66,6 +66,13 @@ jobs:
       - name: "📑 Display parsed test results"
         if: always()
         run: cat report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: "📊 Parse Test Results and Post to GitHub"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python functions/check.py
       # - name: Merge Test Results
       #   run: |
       #     if [[ -f webapp_tests/robot-test-results/api_output.xml && -f webapp_tests/robot-test-results/web_output.xml ]]; then
