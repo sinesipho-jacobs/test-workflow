@@ -118,6 +118,10 @@ jobs:
             pwd
             ls -lah ./webapp_tests/robot-test-results/robot-test-results-web
 
+        - name: Run Test Results Parsing Script
+          if: always()
+          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results-web/output.xml report.md
+
         # - name: Merge the Robot Framework XML files using Rebot
         #   run: |
         #     # Use rebot to combine all XML files in both folders (using wildcards)
