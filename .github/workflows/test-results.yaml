@@ -62,7 +62,7 @@ jobs:
 
         - name: Run Test Results Parsing Script
           if: always()
-          run: python ./functions/display_test_results.py
+          run: python ./function/display_test_results.py
           
         - name: "Post Test Results to GitHub Checks"
           if: always()
