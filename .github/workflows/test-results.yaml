@@ -54,7 +54,6 @@ jobs:
       - name: "⬇️ Download Web Test Results"
         uses: actions/download-artifact@v4
         with:
-          name: robot-test-results-${{ inputs.type }}
           path: ./webapp_tests/robot-test-results/report.md
 
       - name: Combine all report.md files into a single report
