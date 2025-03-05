@@ -96,6 +96,6 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           TEST_TYPE: ${{ inputs.type }}
           JOB_NAME: ${{ inputs.job-name }}
-        run: python ./functions/post_github_check.py
+        run: python ./functions/check.py
 
         
