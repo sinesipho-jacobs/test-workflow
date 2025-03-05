@@ -76,3 +76,13 @@ jobs:
       - name: "📑 Display parsed test results"
         if: always()
         run: cat report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: "Post Test Results to GitHub Checks"
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          TEST_TYPE: ${{ inputs.type }}
+          JOB_NAME: ${{ inputs.job-name }}
+        run: poetry run python ${{ github.workspace }}/test-workflow/functions/post_github_check.py
