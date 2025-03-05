@@ -101,7 +101,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
             GITHUB_REPOSITORY: ${{ github.repository }}
             GITHUB_SHA: ${{ github.sha }}
-            JOB_NAME: ${{ inputs.job-name }}
+            JOB_NAME: ${{ igithub.job }}
           run: python ./functions/check.py
 
 
