@@ -5,7 +5,7 @@ import glob
 
 
 class MyResultVisitor(ResultVisitor):
-    def __init__(self, markdown_file='webapp_tests/robot-test-results/report.md'):
+    def __init__(self, markdown_file='./webapp_tests/robot-test-results/report.md'):
         self.failed_tests = []
         self.passed_tests = []
         self.markdown_file = markdown_file
@@ -58,7 +58,7 @@ class MyResultVisitor(ResultVisitor):
 
 if __name__ == '__main__':
     # Set base directory where output.xml files are expected
-    base_dir = "webapp_tests/robot-test-results"
+    base_dir = "./webapp_tests/robot-test-results"
     markdown_file = os.path.join(base_dir, "report.md")
 
     # Find all output.xml files in subdirectories
