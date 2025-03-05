@@ -48,6 +48,9 @@ jobs:
       - name: "📜 Install Requests"
         run: pip install requests
 
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
+
       - name: "⬇️ Download Web Test Results"
         uses: actions/download-artifact@v4
         with:
