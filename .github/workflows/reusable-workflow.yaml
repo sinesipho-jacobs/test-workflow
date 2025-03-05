@@ -88,6 +88,13 @@ jobs:
         if: always()
         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
 
+      - name: "Upload Parsed Test Results"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ inputs.job-name }}
+          path: ./report.md
+
       - name: "📑 Display parsed test results"
         if: always()
         run: cat report.md >> $GITHUB_STEP_SUMMARY
