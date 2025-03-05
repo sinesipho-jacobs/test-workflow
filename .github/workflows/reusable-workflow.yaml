@@ -57,12 +57,12 @@ jobs:
                  --report webapp_tests/robot-test-results/report.html \
                  webapp_tests/api/
 
-      # - name: "⬆️ Upload Test Results"
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: robot-test-results-${{ inputs.type }}
-      #     path: webapp_tests/robot-test-results/output.xml
+      - name: "⬆️ Upload Test Results"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-test-results-${{ inputs.type }}
+          path: webapp_tests/robot-test-results/output.xml
 
       # - name: "⬇️ Download Web Test Results"
       #   uses: actions/download-artifact@v4
