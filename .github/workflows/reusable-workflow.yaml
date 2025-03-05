@@ -92,4 +92,4 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           TEST_TYPE: ${{ inputs.type }}
           JOB_NAME: ${{ inputs.job-name }}
-        run: python sinesipho-jacobs/test-workflow/functions/post_github_check.py
+        run: python ./functions/post_github_check.py
