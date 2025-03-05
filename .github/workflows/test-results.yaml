@@ -70,7 +70,7 @@ jobs:
           run: |
             combined_report="./combined_report.md"
             echo "### Combined Test Results" > $combined_report
-            find ./ -name "report.md" -exec cat {} >> $combined_report \;
+            find ./webapp_tests/robot-test-results -name "report.md" -exec cat {} >> $combined_report \;
 
         - name: "Debug /robot-test-results"
           if: always()
