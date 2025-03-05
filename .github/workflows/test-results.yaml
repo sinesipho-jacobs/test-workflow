@@ -98,7 +98,7 @@ jobs:
           # working-directory: test-workflow/webapp_tests
           if: always()
           env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             GITHUB_REPOSITORY: ${{ github.repository }}
             GITHUB_SHA: ${{ github.sha }}
             JOB_NAME: ${{ github.job }}
