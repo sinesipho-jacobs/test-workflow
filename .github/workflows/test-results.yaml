@@ -54,79 +54,21 @@ jobs:
   
         - name: "📜 Install Robot Framework"
           run: pip install robotframework
-  
-        - name: "⬇️ Download Web Test Results"
-          uses: actions/download-artifact@v4
-          with:
-            path: ./webapp_tests/robot-test-results/report.md
 
         - name: "⬇️ Download Web Test Results"
           uses: actions/download-artifact@v4
           with:
             path: ./webapp_tests/robot-test-results/
-  
-        - name: Debug:Check if report.md files exist
-          run: |
-            echo "Checking for report.md files..."
-            find ./webapp_tests/robot-test-results/ -name "report.md"
-            ls -la ./webapp_tests/robot-test-results/
-        
-        - name: Combine all report.md files into a single report
-          if: always()
-          run: |
-            combined_report="./combined_report.md"
-            echo "### Combined Test Results" > $combined_report
-            # Check if files exist before attempting to combine
-            report_files=$(find ./webapp_tests/robot-test-results/ -name "report.md")
-            if [ -z "$report_files" ]; then
-              echo "No report.md files found."
-            else
-              echo "Found report.md files, combining..."
-              find ./webapp_tests/robot-test-results/ -name "report.md" -exec cat {} >> $combined_report \;
-              echo "Combined report created: $combined_report"
-            fi
-            
-        - name: Run Test Results Parsing Script
-          if: always()
-          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results-web/output.xml report.md
-              
-        - name: "Debug /"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah .
-
-        - name: "Debug /webapp_tests"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./webapp_tests
-
-        - name: "Debug /robot-test-results"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./webapp_tests/robot-test-results/
-
-        - name: "Debug /robot-test-results/robot-test-results-web"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./webapp_tests/robot-test-results/robot-test-results-web
 
         - name: Run Test Results Parsing Script
           if: always()
-          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results-web/output.xml report.md
-
-        # - name: Merge the Robot Framework XML files using Rebot
-        #   run: |
-        #     # Use rebot to combine all XML files in both folders (using wildcards)
-        #     rebot --output output.xml ./webapp_tests/robot-test-results*/**/*.xml
-    
+          run: python ./webapp_tests/robot-test-results-web/display_test_results.py
+          
+        # - name: "Run Test Results Parsing Script"
+        #   working-directory: Nucleus-Testing/webapp_tests
+        #   if: always()
+        #   run: poetry run python ${{ github.workspace }}/Nucleus-Testing/functions/display_test_results.py
+          
         - name: "Post Test Results to GitHub Checks"
           # working-directory: test-workflow/webapp_tests
           if: always()
