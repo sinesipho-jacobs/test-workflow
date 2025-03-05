@@ -65,12 +65,26 @@ jobs:
           with:
             path: ./webapp_tests/robot-test-results/
   
+        - name: Debug:Check if report.md files exist
+          run: |
+            echo "Checking for report.md files..."
+            find ./webapp_tests/robot-test-results/ -name "report.md"
+            ls -la ./webapp_tests/robot-test-results/
+        
         - name: Combine all report.md files into a single report
           if: always()
           run: |
             combined_report="./combined_report.md"
             echo "### Combined Test Results" > $combined_report
-            find ./webapp_tests/robot-test-results -name "report.md" -exec cat {} >> $combined_report \;
+            # Check if files exist before attempting to combine
+            report_files=$(find ./webapp_tests/robot-test-results/ -name "report.md")
+            if [ -z "$report_files" ]; then
+              echo "No report.md files found."
+            else
+              echo "Found report.md files, combining..."
+              find ./webapp_tests/robot-test-results/ -name "report.md" -exec cat {} >> $combined_report \;
+              echo "Combined report created: $combined_report"
+            fi
 
         - name: "Debug /robot-test-results"
           if: always()
