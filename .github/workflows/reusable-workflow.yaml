@@ -97,7 +97,7 @@ jobs:
 
       - name: "📑 Display parsed test results"
         if: always()
-        run: cat report.md >> $GITHUB_STEP_SUMMARY
+        run: cat ./webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
 
       - name: "Debug /robot-test-results"
         if: always()
