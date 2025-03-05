@@ -90,14 +90,14 @@ jobs:
           if: always()
           run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results/**/output.xml report.md
               
-        - name: "Debug /robot-test-results"
+        - name: "Debug /"
           if: always()
           shell: bash
           run: | 
             pwd
             ls -lah .
 
-        - name: "Debug /robot-test-results"
+        - name: "Debug /webapp_tests"
           if: always()
           shell: bash
           run: | 
@@ -109,7 +109,14 @@ jobs:
           shell: bash
           run: | 
             pwd
-            ls -lah ./webapp_tests/robot-test-results
+            ls -lah ./webapp_tests/robot-test-results/
+
+        - name: "Debug /robot-test-results/robot-test-results-web"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah ./webapp_tests/robot-test-results/robot-test-results-web
 
         # - name: Merge the Robot Framework XML files using Rebot
         #   run: |
