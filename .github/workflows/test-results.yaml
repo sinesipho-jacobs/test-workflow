@@ -11,11 +11,16 @@ jobs:
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: web
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   call-api-tests:
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: api
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
   # merge-test-results:
   #   runs-on: ubuntu-latest
