@@ -77,6 +77,13 @@ jobs:
         if: always()
         run: cat report.md >> $GITHUB_STEP_SUMMARY
 
+      - name: "Debug /robot-test-results"
+        if: always()
+        shell: bash
+        run: | 
+          pwd
+          ls -lah .
+
       - name: "Post Test Results to GitHub Checks"
         if: always()
         env:
