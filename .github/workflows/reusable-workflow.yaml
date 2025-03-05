@@ -85,4 +85,4 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           TEST_TYPE: ${{ inputs.type }}
           JOB_NAME: ${{ inputs.job-name }}
-        run: poetry run python ${{ github.workspace }}/test-workflow/functions/post_github_check.py
+        run: python "${{ github.workspace }}/test-workflow/functions/post_github_check.py"
