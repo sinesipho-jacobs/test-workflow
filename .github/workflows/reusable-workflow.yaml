@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ inputs.job-name }}
-          path: ./report.md
+          path: ./webapp_tests/robot-test-results/report.md
 
       - name: "📑 Display parsed test results"
         if: always()
