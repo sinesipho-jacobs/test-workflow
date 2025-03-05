@@ -9,6 +9,10 @@ on:
 
 jobs:
   call-web-tests:
+    permissions:
+      contents: read
+      checks: write
+      actions: write
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: web
@@ -17,6 +21,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   call-api-tests:
+    permissions:
+      contents: read
+      checks: write
+      actions: write
     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
     with:
       type: api
