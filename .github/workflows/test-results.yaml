@@ -88,7 +88,7 @@ jobs:
             
         - name: Run Test Results Parsing Script
           if: always()
-          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results/**/output.xml report.md
+          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results-web/output.xml report.md
               
         - name: "Debug /"
           if: always()
