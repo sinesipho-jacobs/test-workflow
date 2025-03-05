@@ -8,6 +8,10 @@ on:
         required: true
         type: string
         default: "web"
+    secrets:
+      GH_TOKEN:
+        description: "GitHub token"
+        required: true
 
 jobs:
   run-tests:
