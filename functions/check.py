@@ -71,7 +71,7 @@ def post_github_check(results, report_content):
 def run_robot_tests():
     """Run Robot Framework tests, parse results, and post them to GitHub."""
     print(f"Current Working Directory: {os.getcwd()}")
-    output_file = os.path.abspath('./webapp_tests/robot-test-results/output.xml')
+    output_file = os.path.abspath('./output.xml')
     report_file = os.path.abspath('./combined_report.md')
 
     if not validate_output_file(output_file):
