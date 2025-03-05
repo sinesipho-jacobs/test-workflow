@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: "📜 Install Requests"
+        run: pip install requests
+
       - name: "📜 Install Robot Framework"
         run: pip install robotframework
 
@@ -94,3 +97,5 @@ jobs:
           TEST_TYPE: ${{ inputs.type }}
           JOB_NAME: ${{ inputs.job-name }}
         run: python ./functions/post_github_check.py
+
+        
