@@ -88,7 +88,15 @@ jobs:
           run: | 
             pwd
             ls -lah ./webapp_tests/robot-test-results
+
+        - name: Merge the Robot Framework XML files using Rebot
+          run: |
+            # Ensure rebot is installed
+            pip install robotframework
   
+            # Use rebot to combine all XML files in both folders (using wildcards)
+            rebot --output output.xml ./webapp_tests/robot-test-results*/**/*.xml
+    
         - name: "Post Test Results to GitHub Checks"
           # working-directory: test-workflow/webapp_tests
           if: always()
