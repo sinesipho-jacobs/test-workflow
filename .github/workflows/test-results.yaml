@@ -55,6 +55,11 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             path: ./webapp_tests/robot-test-results/report.md
+
+        - name: "⬇️ Download Web Test Results"
+          uses: actions/download-artifact@v4
+          with:
+            path: ./webapp_tests/robot-test-results/
   
         - name: Combine all report.md files into a single report
           if: always()
