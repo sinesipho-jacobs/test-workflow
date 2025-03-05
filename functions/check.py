@@ -204,7 +204,7 @@ if __name__ == "__main__":
 #     """Run Robot Framework tests, parse results, and post them to GitHub."""
 #     print(f"Current Working Directory: {os.getcwd()}")
 #     result_dir = os.path.abspath('./webapp_tests/robot-test-results/')
-#     report_file = os.path.abspath('./report.md')
+#     report_file = os.path.abspath('./combined_report.md')
 
 #     xml_files = glob.glob(os.path.join(result_dir, "*.xml"))
 #     if not xml_files:
