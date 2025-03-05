@@ -3,6 +3,10 @@ name: Run Robot Framework Tests (Reusable)
 on:
   workflow_call:
     inputs:
+      job-name:
+        description: "The job name from the calling workflow"
+        required: true
+        type: string
       type:
         description: "Web App Tests(web) or API Tests(api)"
         required: true
