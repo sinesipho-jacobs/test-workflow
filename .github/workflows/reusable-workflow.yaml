@@ -70,19 +70,19 @@ jobs:
       #     name: robot-test-results-${{ inputs.type }}
       #     path: webapp_tests/robot-test-results
 
-      # - name: "Debug webapp_tests"
-      #   if: always()
-      #   shell: bash
-      #   run: | 
-      #     pwd
-      #     ls -lah webapp_tests
+      - name: "Debug webapp_tests"
+        if: always()
+        shell: bash
+        run: | 
+          pwd
+          ls -lah webapp_tests
 
-      # - name: "Debug /robot-test-results"
-      #   if: always()
-      #   shell: bash
-      #   run: | 
-      #     pwd
-      #     ls -lah webapp_tests/robot-test-results
+      - name: "Debug /robot-test-results"
+        if: always()
+        shell: bash
+        run: | 
+          pwd
+          ls -lah webapp_tests/robot-test-results
 
       - name: "🐍 Run Test Results Parsing Script"
         if: always()
