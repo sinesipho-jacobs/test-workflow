@@ -67,6 +67,27 @@ jobs:
             combined_report="./combined_report.md"
             echo "### Combined Test Results" > $combined_report
             find ./ -name "report.md" -exec cat {} >> $combined_report \;
+
+        - name: "Debug /robot-test-results"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah .
+
+        - name: "Debug /robot-test-results"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah ./webapp_tests
+
+        - name: "Debug /robot-test-results"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah ./webapp_tests/robot-test-results
   
         - name: "Post Test Results to GitHub Checks"
           # working-directory: test-workflow/webapp_tests
