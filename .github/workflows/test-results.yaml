@@ -32,44 +32,5 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  display-combined-test-results:
-    needs: [call-web-tests, call-api-tests]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout Repository"
-        uses: actions/checkout@v4
-
-      - name: "🐍 Set up Python"
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: "📜 Install Requests"
-        run: pip install requests
-
-      - name: "📜 Install Robot Framework"
-        run: pip install robotframework
-
-      - name: "⬇️ Download Web Test Results"
-        uses: actions/download-artifact@v4
-        with:
-          path: ./webapp_tests/robot-test-results/report.md
-
-      - name: Combine all report.md files into a single report
-        if: always()
-        run: |
-          combined_report="./combined_report.md"
-          echo "### Combined Test Results" > $combined_report
-          find ./ -name "report.md" -exec cat {} >> $combined_report \;
-
-      - name: "Post Test Results to GitHub Checks"
-        # working-directory: test-workflow/webapp_tests
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
-          JOB_NAME: ${{ github.job }}
-        run: python ./functions/check.py
+  
  
