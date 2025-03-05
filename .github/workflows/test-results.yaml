@@ -85,7 +85,11 @@ jobs:
               find ./webapp_tests/robot-test-results/ -name "report.md" -exec cat {} >> $combined_report \;
               echo "Combined report created: $combined_report"
             fi
-
+            
+        - name: Run Test Results Parsing Script
+          if: always()
+          run: python ./functions/display_test_results.py ./webapp_tests/robot-test-results/**/output.xml report.md
+              
         - name: "Debug /robot-test-results"
           if: always()
           shell: bash
