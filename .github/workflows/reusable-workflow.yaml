@@ -106,15 +106,15 @@ jobs:
           pwd
           ls -lah .
 
-      - name: "Post Test Results to GitHub Checks"
-        # working-directory: test-workflow/webapp_tests
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
-          TEST_TYPE: ${{ inputs.type }}
-          JOB_NAME: ${{ inputs.job-name }}
-        run: python ./functions/check.py
+      # - name: "Post Test Results to GitHub Checks"
+      #   # working-directory: test-workflow/webapp_tests
+      #   if: always()
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      #     GITHUB_REPOSITORY: ${{ github.repository }}
+      #     GITHUB_SHA: ${{ github.sha }}
+      #     TEST_TYPE: ${{ inputs.type }}
+      #     JOB_NAME: ${{ inputs.job-name }}
+      #   run: python ./functions/check.py
 
         
