@@ -47,7 +47,7 @@ def post_github_check(results, report_content):
 
     summary = (f"{report_content}")
 
-    payload_name = f"Test Results - {job_name}"
+    payload_name = f"Test Results"
 
     payload = {
         "name": payload_name.title(),
