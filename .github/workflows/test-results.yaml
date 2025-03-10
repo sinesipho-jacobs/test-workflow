@@ -59,7 +59,16 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             path: ./webapp_tests/robot-test-results/
-
+            
+        - name: Find and merge Robot Framework logs
+          run: |
+            OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
+            if [ -n "$OUTPUT_FILES" ]; then
+              rebot --output merged_output.xml --log merged_log.html --report merged_report.html $OUTPUT_FILES
+            else
+              echo "No output.xml files found. Skipping merging."
+            fi
+            
         - name: Run Test Results Parsing Script
           if: always()
           run: python ./functions/display_test_results.py
