@@ -65,7 +65,7 @@ jobs:
           run: |
             OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
             if [ -n "$OUTPUT_FILES" ]; then
-              rebot --output ./webapp_tests/merged_output.xml --log ./webapp_tests/index.html --report ./webapp_tests/merged_report.html $OUTPUT_FILES
+              rebot --output ./webapp_tests/output.xml --log ./webapp_tests/index.html --report ./webapp_tests/report.html $OUTPUT_FILES
             else
               echo "No output.xml files found. Skipping merging."
             fi
@@ -74,7 +74,8 @@ jobs:
           run: |
             mkdir -p docs
             cp ./webapp_tests/index.html docs/
-            cp ./webapp_tests/merged_report.html docs/
+            cp ./webapp_tests/output.xml docs/
+            cp ./webapp_tests/report.html docs/
 
         - name: Add GitHub Pages Link to Summary
           run: |
