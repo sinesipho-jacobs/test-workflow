@@ -88,6 +88,19 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
+        - name: 🚀 Deploy Merged Log to GitHub Pages
+          uses: peaceiris/actions-gh-pages@v4
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./webapp_tests  # Make sure merged_log.html is inside this folder
+            publish_branch: gh-pages
+            keep_files: true
+
+        - name: Add GitHub Pages Log Link to Summary
+          run: |
+            echo "# 🔍 Automated Test Report" >> ${GITHUB_STEP_SUMMARY}
+            echo "Click [here](https://sinesipho-jacobs.github.io/test-workflow/webapp_tests/merged_log.html) to view the test log." >> ${GITHUB_STEP_SUMMARY}
+
         - name: "🚀 Deploy Test Logs to GitHub Pages"
           if: always()
           uses: peaceiris/actions-gh-pages@v4
