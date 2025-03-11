@@ -69,6 +69,23 @@ jobs:
             else
               echo "No output.xml files found. Skipping merging."
             fi
+
+        - name: Copy Reports to docs
+          run: |
+            mkdir -p docs
+            cp Nucleus-Testing/webapp_tests/log.html docs/
+            cp Nucleus-Testing/webapp_tests/report.html docs/
+
+        - name: Add GitHub Pages Link to Summary
+          run: |
+            echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
+  
+        - name: Upload Robot Framework logs
+          uses: actions/upload-artifact@v3
+          with:
+            name: robot-framework-reports
+            path: Nucleus-Testing/webapp_tests/
             
         - name: Run Test Results Parsing Script
           if: always()
