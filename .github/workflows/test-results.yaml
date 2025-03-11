@@ -82,7 +82,7 @@ jobs:
             echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
   
         - name: Upload Robot Framework logs
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: robot-framework-reports
             path: Nucleus-Testing/webapp_tests/
