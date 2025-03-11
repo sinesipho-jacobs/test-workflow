@@ -87,6 +87,11 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
+        - name: Copy Reports to docs
+          run: |
+           cp ./webapp_tests/index.html ./
+           cp ./webapp_tests/merged_output.xml ./
+           cp ./webapp_tests/merged_report.html ./
 
   
  
