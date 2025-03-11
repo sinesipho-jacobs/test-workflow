@@ -99,26 +99,26 @@ jobs:
         - name: Add GitHub Pages Link to Summary
           run: |
             echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
-  
+            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+
         - name: Upload Robot Framework logs
           uses: actions/upload-artifact@v4
           with:
             name: robot-framework-reports
             path: ./webapp_tests/
             
-        - name: Run Test Results Parsing Script
-          if: always()
-          run: python ./functions/display_test_results.py
+        # - name: Run Test Results Parsing Script
+        #   if: always()
+        #   run: python ./functions/display_test_results.py
 
-        - name: "Post Test Results to GitHub Checks"
-          if: always()
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITHUB_REPOSITORY: ${{ github.repository }}
-            GITHUB_SHA: ${{ github.sha }}
-            JOB_NAME: ${{ github.job }}
-          run: python ./functions/check.py
+        # - name: "Post Test Results to GitHub Checks"
+        #   if: always()
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #     GITHUB_REPOSITORY: ${{ github.repository }}
+        #     GITHUB_SHA: ${{ github.sha }}
+        #     JOB_NAME: ${{ github.job }}
+        #   run: python ./functions/check.py
           
 
         
