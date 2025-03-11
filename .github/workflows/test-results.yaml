@@ -72,7 +72,7 @@ jobs:
 
         - name: Copy Reports to docs
           run: |
-            mkdir -p .
+            mkdir -p ./
             cp ./webapp_tests/index.html docs/
             cp ./webapp_tests/output.xml docs/
             cp ./webapp_tests/report.html docs/
@@ -82,7 +82,7 @@ jobs:
           shell: bash
           run: | 
             pwd
-            ls -lah ./docs/
+            ls -lah ./
         # - name: Run Test Results Parsing Script
         #   if: always()
         #   run: python ./functions/display_test_results.py
