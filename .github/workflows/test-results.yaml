@@ -93,19 +93,31 @@ jobs:
         #    cp ./webapp_tests/merged_output.xml ./
         #    cp ./webapp_tests/merged_report.html ./
 
-        - name: Copy Reports to docs
+        # Copy Reports to root directory
+        - name: "Copy Reports to Root"
           run: |
             cp ./webapp_tests/index.html ./
             cp ./webapp_tests/merged_output.xml ./
             cp ./webapp_tests/merged_report.html ./
-        
-        - name: Commit and Push Files to gh-pages
+  
+        # Commit and Push Files to the gh-pages branch
+        - name: "Commit and Push Reports to gh-pages"
           run: |
             git config user.name "GitHub Actions"
             git config user.email "actions@github.com"
             git add .
-            git commit -m "Add test reports"
+            git commit -m "Add merged test reports"
             git push origin HEAD:gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+        # Optional: Deploy to GitHub Pages if you are using `gh-pages` branch
+        - name: "Deploy to GitHub Pages"
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./  # Publish from the root directory
+            branch: gh-pages  # Make sure GitHub Pages is set to serve from this branch
 
 
   
