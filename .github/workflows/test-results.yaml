@@ -94,10 +94,10 @@ jobs:
             branch: gh-pages  # The branch that GitHub Pages will serve from
             folder: ./webapp_tests
 
-        - name: Add GitHub Pages Log Link to Summary
-          run: |
-            echo "# 🔍 Automated Test Report" >> ${GITHUB_STEP_SUMMARY}
-            echo "Click [here](https://sinesipho-jacobs.github.io/test-workflow/webapp_tests/merged_log.html) to view the test log." >> ${GITHUB_STEP_SUMMARY}
+        # - name: Add GitHub Pages Log Link to Summary
+        #   run: |
+        #     echo "# 🔍 Automated Test Report" >> ${GITHUB_STEP_SUMMARY}
+        #     echo "Click [here](https://sinesipho-jacobs.github.io/test-workflow/webapp_tests/merged_log.html) to view the test log." >> ${GITHUB_STEP_SUMMARY}
 
         - name: "🚀 Deploy Test Logs to GitHub Pages"
           if: always()
