@@ -88,6 +88,15 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
+        - name: "🚀 Deploy Test Logs to GitHub Pages"
+          if: always()
+          uses: peaceiris/actions-gh-pages@v4
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./webapp_tests
+            keep_files: true  # Keeps previous files instead of deleting them
+            publish_branch: gh-pages
+
 
   
  
