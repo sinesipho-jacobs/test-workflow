@@ -1,124 +1,118 @@
-name: Run and Merge Robot Tests
+name: ESB Automated Tests
 
 on:
   # push:
   #   branches:
-  #     - main
-  # pull_request:
+  #     - master
+    
   workflow_dispatch:
 
 jobs:
-  call-web-tests:
+  automated-api-tests:
+    # runs-on: aurora-web
     permissions:
       contents: read
       checks: write
       actions: write
-    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
-    with:
-      type: web
-      job-name: automated-web-tests
-    secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  call-api-tests:
-    permissions:
-      contents: read
-      checks: write
-      actions: write
-    uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+    uses: MagnaBC/Nucleus-Testing/.github/workflows/reusable-automated-tests.yaml@master
     with:
       type: api
+      poetry-path: webapp_tests
+      robot-test-path: esb/test_api.robot
       job-name: automated-api-tests
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  web-automated-register-tests:
+    # runs-on: aurora-web
+    permissions:
+      contents: read
+      checks: write
+      actions: write
+    uses: MagnaBC/Nucleus-Testing/.github/workflows/reusable-automated-tests.yaml@master
+    with:
+      type: web
+      poetry-path: webapp_tests
+      robot-test-path: register/register.robot
+      job-name: web-automated-register-tests
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  web-automated-manage-roles-tests:
+     # runs-on: aurora-web
+     permissions:
+       contents: read
+       checks: write
+       actions: write
+     uses: MagnaBC/Nucleus-Testing/.github/workflows/reusable-automated-tests.yaml@master
+     with:
+       type: web
+       poetry-path: webapp_tests
+       robot-test-path: roles/manage_roles.robot
+       job-name: web-automated-manage-roles-tests
+     secrets:
+       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
   display-combined-test-results:
-      needs: [call-web-tests, call-api-tests]
-      if: always()
-      runs-on: ubuntu-latest
-      permissions:
+    needs: [automated-api-tests, web-automated-register-tests, web-automated-manage-roles-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
         contents: read
         checks: write
         actions: write
-      steps:
-        - name: "📥 Checkout Repository"
-          uses: actions/checkout@v4
-  
-        - name: "🐍 Set up Python"
-          uses: actions/setup-python@v4
-          with:
-            python-version: '3.9'
-  
-        - name: "📜 Install Requests"
-          run: pip install requests
-  
-        - name: "📜 Install Robot Framework"
-          run: pip install robotframework
+    steps:
+    - name: "Checkout Repository"
+      uses: actions/checkout@v4
+      with:
+        ref: master
+        repository: MagnaBC/Nucleus-Testing
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: Nucleus-Testing
 
-        - name: "⬇️ Download Web Test Results"
-          uses: actions/download-artifact@v4
-          with:
-            path: ./webapp_tests/robot-test-results/
-            
-        - name: Find and merge Robot Framework logs
-          run: |
-            OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
-            if [ -n "$OUTPUT_FILES" ]; then
-              rebot --output ./webapp_tests/merged_output.xml --log ./webapp_tests/index.html --report ./webapp_tests/merged_report.html $OUTPUT_FILES
-            else
-              echo "No output.xml files found. Skipping merging."
-            fi
-            
-        - name: Run Test Results Parsing Script
-          if: always()
-          run: python ./functions/display_test_results.py
-        - name: "Debug /webapp_tests"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./webapp_tests/
-        - name: "Post Test Results to GitHub Checks"
-          if: always()
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITHUB_REPOSITORY: ${{ github.repository }}
-            GITHUB_SHA: ${{ github.sha }}
-            JOB_NAME: ${{ github.job }}
-          run: python ./functions/check.py
+    - name: "Install Poetry"
+      shell: bash
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        poetry --version
 
-        # - name: Copy Reports to docs
-        #   run: |
-        #    cp ./webapp_tests/index.html ./
-        #    cp ./webapp_tests/merged_output.xml ./
-        #    cp ./webapp_tests/merged_report.html ./
+    - name: "Add Poetry to PATH"
+      shell: bash
+      run: |
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        echo $PATH #debug
 
-        # Copy Reports to root directory
-        - name: "Copy Reports to Root"
-          run: |
-            cp ./webapp_tests/index.html ./
-            cp ./webapp_tests/merged_output.xml ./
-            cp ./webapp_tests/merged_report.html ./
-  
-        # Commit and Push Files to the gh-pages branch
-        - name: "Commit and Push Reports to gh-pages"
-          run: |
-            git config user.name "GitHub Actions"
-            git config user.email "actions@github.com"
-            git add .
-            git commit -m "Add merged test reports"
-            git push origin HEAD:gh-pages
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-        # Optional: Deploy to GitHub Pages if you are using `gh-pages` branch
-        - name: "Deploy to GitHub Pages"
-          uses: peaceiris/actions-gh-pages@v3
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./  # Publish from the root directory
-            branch: gh-pages  # Make sure GitHub Pages is set to serve from this branch
+    - name: "Poetry Install"
+      run: |     
+        cd Nucleus-Testing/webapp_tests || exit 1     
+        export PATH="$HOME/.local/bin:$PATH"     
+        poetry install
 
+    - name: Download Test Results Artifacts
+      if: always()
+      uses: actions/download-artifact@v4
+      with:
+        path: Nucleus-Testing/webapp_tests/
 
-  
- 
+    - name: Find and merge Robot Framework logs
+      run: |
+        OUTPUT_FILES=$(find Nucleus-Testing/webapp_tests -name "output.xml" | tr '\n' ' ')
+        if [ -n "$OUTPUT_FILES" ]; then
+          rebot --output Nucleus-Testing/webapp_tests/output.xml --log Nucleus-Testing/webapp_tests/log.html --report Nucleus-Testing/webapp_tests/report.html $OUTPUT_FILES
+        else
+          echo "No output.xml files found. Skipping merging."
+
+    - name: "Run Combined Test Results Parsing Script"
+      working-directory: Nucleus-Testing/webapp_tests
+      if: always()
+      run: poetry run python ${{ github.workspace }}/Nucleus-Testing/functions/display_test_results.py
+
+    - name: "Post Test Results to GitHub Checks"
+      if: always()
+      working-directory: Nucleus-Testing/webapp_tests
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_SHA: ${{ github.sha }}
+        JOB_NAME: ${{ github.job }}
+      run: poetry run python ${{ github.workspace }}/Nucleus-Testing/functions/check_github_run.py
