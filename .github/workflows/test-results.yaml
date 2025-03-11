@@ -90,7 +90,7 @@ jobs:
           run: python ./functions/check.py
           
         - name: "📦 Upload Test Results as Artifact"
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v4
           with:
             name: test-results
             path: ./webapp_tests/
