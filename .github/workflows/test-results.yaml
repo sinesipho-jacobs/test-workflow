@@ -34,7 +34,7 @@ jobs:
 
   display-combined-test-results:
       needs: [call-web-tests, call-api-tests]
-      if: ${{ false }}
+      if: always()
       runs-on: ubuntu-latest
       permissions:
         contents: read
