@@ -73,8 +73,8 @@ jobs:
         - name: Copy Reports to docs
           run: |
             mkdir -p docs
-            cp Nucleus-Testing/webapp_tests/log.html docs/
-            cp Nucleus-Testing/webapp_tests/report.html docs/
+            cp Nucleus-Testing/webapp_tests/merged_log.html docs/
+            cp Nucleus-Testing/webapp_tests/merged_report.html docs/
 
         - name: Add GitHub Pages Link to Summary
           run: |
