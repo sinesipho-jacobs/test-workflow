@@ -88,13 +88,11 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
-        - name: 🚀 Deploy Merged Log to GitHub Pages
-          uses: peaceiris/actions-gh-pages@v4
+        - name: Deploy to GitHub Pages
+          uses: actions/deploy-pages@v1
           with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./webapp_tests  # Make sure merged_log.html is inside this folder
-            publish_branch: gh-pages
-            keep_files: true
+            branch: gh-pages  # The branch that GitHub Pages will serve from
+            folder: ./webapp_tests
 
         - name: Add GitHub Pages Log Link to Summary
           run: |
