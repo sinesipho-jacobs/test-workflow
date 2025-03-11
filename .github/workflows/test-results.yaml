@@ -83,7 +83,19 @@ jobs:
           run: | 
             pwd
             ls -lah ./docs/
-            
+        - name: Run Test Results Parsing Script
+          if: always()
+          run: python ./functions/display_test_results.py
+
+        - name: "Post Test Results to GitHub Checks"
+          if: always()
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_REPOSITORY: ${{ github.repository }}
+            GITHUB_SHA: ${{ github.sha }}
+            JOB_NAME: ${{ github.job }}
+          run: python ./functions/check.py
+          
         - name: Add GitHub Pages Link to Summary
           run: |
             echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
