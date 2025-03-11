@@ -40,9 +40,6 @@ jobs:
         contents: read
         checks: write
         actions: write
-      strategy:
-        matrix:
-          hidden: [true] # Trick to make it look like a matrix job
       steps:
         - name: "📥 Checkout Repository"
           uses: actions/checkout@v4
