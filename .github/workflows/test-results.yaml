@@ -1,10 +1,6 @@
 name: Run and Merge Robot Tests
 
 on:
-  # push:
-  #   branches:
-  #     - main
-  # pull_request:
   workflow_dispatch:
 
 jobs:
@@ -33,74 +29,187 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   display-combined-test-results:
-      needs: [call-web-tests, call-api-tests]
-      if: always()
-      runs-on: ubuntu-latest
-      permissions:
-        contents: write
-        checks: write
-        actions: write
-        id-token: write  # Required for deploying with actions/deploy-pages@v1
-      steps:
-        - name: "📥 Checkout Repository"
-          uses: actions/checkout@v4
-  
-        - name: "🐍 Set up Python"
-          uses: actions/setup-python@v4
-          with:
-            python-version: '3.9'
-  
-        - name: "📜 Install Requests"
-          run: pip install requests
-  
-        - name: "📜 Install Robot Framework"
-          run: pip install robotframework
+    needs: [call-web-tests, call-api-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+      actions: write
+      id-token: write  # Required for deploying with actions/deploy-pages@v1
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
 
-        - name: "⬇️ Download Web Test Results"
-          uses: actions/download-artifact@v4
-          with:
-            path: ./webapp_tests/robot-test-results/
-            
-        - name: Find and merge Robot Framework logs
-          run: |
-            OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
-            if [ -n "$OUTPUT_FILES" ]; then
-              rebot --output ./webapp_tests/merged_output.xml --log ./webapp_tests/merged_log.html --report ./webapp_tests/merged_report.html $OUTPUT_FILES
-            else
-              echo "No output.xml files found. Skipping merging."
-            fi
-            
-        - name: Run Test Results Parsing Script
-          if: always()
-          run: python ./functions/display_test_results.py
-        - name: "Debug /webapp_tests"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./webapp_tests/
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-        - name: "Post Test Results to GitHub Checks"
-          if: always()
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITHUB_REPOSITORY: ${{ github.repository }}
-            GITHUB_SHA: ${{ github.sha }}
-            JOB_NAME: ${{ github.job }}
-          run: python ./functions/check.py
+      - name: "📜 Install Requests"
+        run: pip install requests
+
+      - name: "📜 Install Robot Framework"
+        run: pip install robotframework
+
+      - name: "⬇️ Download Web Test Results (Web)"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results-web-xml
+          path: ./webapp_tests/robot-test-results/web
+
+      - name: "⬇️ Download API Test Results (API)"
+        uses: actions/download-artifact@v4
+        with:
+          name: robot-test-results-api-xml
+          path: ./webapp_tests/robot-test-results/api
+
+      - name: Find and merge Robot Framework logs
+        run: |
+          OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
+          if [ -n "$OUTPUT_FILES" ]; then
+            rebot --output ./webapp_tests/merged_output.xml --log ./webapp_tests/merged_log.html --report ./webapp_tests/merged_report.html $OUTPUT_FILES
+          else
+            echo "No output.xml files found. Skipping merging."
+          fi
+
+      - name: Run Test Results Parsing Script
+        if: always()
+        run: python ./functions/display_test_results.py ./webapp_tests/merged_output.xml report.md
+
+      - name: "Debug /webapp_tests"
+        if: always()
+        shell: bash
+        run: |
+          pwd
+          ls -lah ./webapp_tests/
+
+      - name: "Post Test Results to GitHub Checks"
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          JOB_NAME: ${{ github.job }}
+        run: python ./functions/check.py
+
+      - name: "📦 Upload Test Results as Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./webapp_tests/
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
+        with:
+          branch: gh-pages  # The branch to deploy to
+          folder: ./webapp_tests/
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+
+# name: Run and Merge Robot Tests
+
+# on:
+#   # push:
+#   #   branches:
+#   #     - main
+#   # pull_request:
+#   workflow_dispatch:
+
+# jobs:
+#   call-web-tests:
+#     permissions:
+#       contents: read
+#       checks: write
+#       actions: write
+#     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+#     with:
+#       type: web
+#       job-name: automated-web-tests
+#     secrets:
+#       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#   call-api-tests:
+#     permissions:
+#       contents: read
+#       checks: write
+#       actions: write
+#     uses: sinesipho-jacobs/test-workflow/.github/workflows/reusable-workflow.yaml@main
+#     with:
+#       type: api
+#       job-name: automated-api-tests
+#     secrets:
+#       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#   display-combined-test-results:
+#       needs: [call-web-tests, call-api-tests]
+#       if: always()
+#       runs-on: ubuntu-latest
+#       permissions:
+#         contents: write
+#         checks: write
+#         actions: write
+#         id-token: write  # Required for deploying with actions/deploy-pages@v1
+#       steps:
+#         - name: "📥 Checkout Repository"
+#           uses: actions/checkout@v4
+  
+#         - name: "🐍 Set up Python"
+#           uses: actions/setup-python@v4
+#           with:
+#             python-version: '3.9'
+  
+#         - name: "📜 Install Requests"
+#           run: pip install requests
+  
+#         - name: "📜 Install Robot Framework"
+#           run: pip install robotframework
+
+#         - name: "⬇️ Download Web Test Results"
+#           uses: actions/download-artifact@v4
+#           with:
+#             path: ./webapp_tests/robot-test-results/
+            
+#         - name: Find and merge Robot Framework logs
+#           run: |
+#             OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
+#             if [ -n "$OUTPUT_FILES" ]; then
+#               rebot --output ./webapp_tests/merged_output.xml --log ./webapp_tests/merged_log.html --report ./webapp_tests/merged_report.html $OUTPUT_FILES
+#             else
+#               echo "No output.xml files found. Skipping merging."
+#             fi
+            
+#         - name: Run Test Results Parsing Script
+#           if: always()
+#           run: python ./functions/display_test_results.py
+#         - name: "Debug /webapp_tests"
+#           if: always()
+#           shell: bash
+#           run: | 
+#             pwd
+#             ls -lah ./webapp_tests/
+
+#         - name: "Post Test Results to GitHub Checks"
+#           if: always()
+#           env:
+#             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#             GITHUB_REPOSITORY: ${{ github.repository }}
+#             GITHUB_SHA: ${{ github.sha }}
+#             JOB_NAME: ${{ github.job }}
+#           run: python ./functions/check.py
           
-        - name: "📦 Upload Test Results as Artifact"
-          uses: actions/upload-artifact@v4
-          with:
-            name: test-results
-            path: ./webapp_tests/
+#         - name: "📦 Upload Test Results as Artifact"
+#           uses: actions/upload-artifact@v4
+#           with:
+#             name: test-results
+#             path: ./webapp_tests/
             
-        - name: Deploy to GitHub Pages
-          uses: actions/deploy-pages@v1
-          with:
-            branch: gh-pages  # The branch to deploy to
-            folder: ./webapp_tests  # The folder containing the logs to deploy
-            token: ${{ secrets.GITHUB_TOKEN }}
+#         - name: Deploy to GitHub Pages
+#           uses: actions/deploy-pages@v1
+#           with:
+#             branch: gh-pages  # The branch to deploy to
+#             folder: ./webapp_tests  # The folder containing the logs to deploy
+#             token: ${{ secrets.GITHUB_TOKEN }}
 
         
 
