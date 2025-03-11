@@ -73,8 +73,8 @@ jobs:
         - name: Copy Reports to docs
           run: |
             mkdir -p docs
-            cp Nucleus-Testing/webapp_tests/merged_log.html docs/
-            cp Nucleus-Testing/webapp_tests/merged_report.html docs/
+            cp ./webapp_tests/merged_log.html docs/
+            cp ./webapp_tests/merged_report.html docs/
 
         - name: Add GitHub Pages Link to Summary
           run: |
@@ -85,7 +85,7 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: robot-framework-reports
-            path: Nucleus-Testing/webapp_tests/
+            path: ./webapp_tests/
             
         - name: Run Test Results Parsing Script
           if: always()
