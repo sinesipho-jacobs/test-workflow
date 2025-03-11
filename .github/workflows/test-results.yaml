@@ -37,9 +37,10 @@ jobs:
       if: always()
       runs-on: ubuntu-latest
       permissions:
-        contents: read
+        contents: write
         checks: write
         actions: write
+        id-token: write  # Required for deploying with actions/deploy-pages@v1
       steps:
         - name: "📥 Checkout Repository"
           uses: actions/checkout@v4
@@ -91,23 +92,11 @@ jobs:
         - name: Deploy to GitHub Pages
           uses: actions/deploy-pages@v1
           with:
-            branch: gh-pages  # The branch that GitHub Pages will serve from
-            folder: ./webapp_tests
+            branch: gh-pages  # The branch to deploy to
+            folder: ./webapp_tests  # The folder containing the logs to deploy
+            token: ${{ secrets.GITHUB_TOKEN }}
 
-        # - name: Add GitHub Pages Log Link to Summary
-        #   run: |
-        #     echo "# 🔍 Automated Test Report" >> ${GITHUB_STEP_SUMMARY}
-        #     echo "Click [here](https://sinesipho-jacobs.github.io/test-workflow/webapp_tests/merged_log.html) to view the test log." >> ${GITHUB_STEP_SUMMARY}
-
-        - name: "🚀 Deploy Test Logs to GitHub Pages"
-          if: always()
-          uses: peaceiris/actions-gh-pages@v4
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./webapp_tests
-            keep_files: true  # Keeps previous files instead of deleting them
-            publish_branch: gh-pages
-
+        
 
   
  
