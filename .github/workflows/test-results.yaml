@@ -88,7 +88,13 @@ jobs:
             GITHUB_SHA: ${{ github.sha }}
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
-
+          
+        - name: "📦 Upload Test Results as Artifact"
+          uses: actions/upload-artifact@v2
+          with:
+            name: test-results
+            path: ./webapp_tests/
+            
         - name: Deploy to GitHub Pages
           uses: actions/deploy-pages@v1
           with:
