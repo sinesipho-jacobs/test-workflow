@@ -99,7 +99,7 @@ jobs:
         - name: Add GitHub Pages Link to Summary
           run: |
             echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }}/docs/index.html)" >> $GITHUB_STEP_SUMMARY
 
         - name: Upload Robot Framework logs
           uses: actions/upload-artifact@v4
