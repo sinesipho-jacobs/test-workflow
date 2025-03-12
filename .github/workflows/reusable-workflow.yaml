@@ -66,47 +66,12 @@ jobs:
             webapp_tests/robot-test-results/output.xml
             webapp_tests/robot-test-results/log.html
             webapp_tests/robot-test-results/report.html
-          # path: webapp_tests/robot-test-results/output.xml
-
-      # - name: Upload Logs to GitHub Pages
-      #   if: always()
-      #   run: |
-      #     mkdir -p gh-pages
-      #     cp -r ./webapp_tests/robot-test-results$/* gh-pages/
-
-
-      # - name: Deploy Logs to GitHub Pages
-      #   if: always()
-      #   uses: peaceiris/actions-gh-pages@v4
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./gh-pages
 
       - name: Add Log File Link to Summary
         if: always()
         run: |
           echo "### 📄 Robot Framework Logs" >> $GITHUB_STEP_SUMMARY
           echo "🔗 [View Test Logs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/log.html)" >> $GITHUB_STEP_SUMMARY
-
-      # - name: "⬇️ Download Web Test Results"
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: robot-test-results-${{ inputs.type }}
-      #     path: webapp_tests/robot-test-results
-
-      - name: "Debug webapp_tests"
-        if: always()
-        shell: bash
-        run: | 
-          pwd
-          ls -lah webapp_tests
-
-      - name: "Debug /robot-test-results"
-        if: always()
-        shell: bash
-        run: | 
-          pwd
-          ls -lah webapp_tests/robot-test-results
 
       - name: "🐍 Run Test Results Parsing Script"
         if: always()
@@ -123,21 +88,148 @@ jobs:
         if: always()
         run: cat ./webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
 
-      - name: "Debug /robot-test-results"
-        if: always()
-        shell: bash
-        run: | 
-          pwd
-          ls -lah .
 
-      # - name: "Post Test Results to GitHub Checks"
-      #   # working-directory: test-workflow/webapp_tests
-      #   if: always()
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      #     GITHUB_REPOSITORY: ${{ github.repository }}
-      #     GITHUB_SHA: ${{ github.sha }}
-      #     TEST_TYPE: ${{ inputs.type }}
-      #     JOB_NAME: ${{ inputs.job-name }}
-      #   run: python ./functions/check.py
+
+# name: Run Robot Framework Tests (Reusable)
+
+# on:
+#   workflow_call:
+#     inputs:
+#       job-name:
+#         description: "The job name from the calling workflow"
+#         required: true
+#         type: string
+#       type:
+#         description: "Web App Tests(web) or API Tests(api)"
+#         required: true
+#         type: string
+#         default: "web"
+#     secrets:
+#       GH_TOKEN:
+#         description: "GitHub token"
+#         required: true
+
+# jobs:
+#   run-tests:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       actions: write
+#       contents: read
+#       checks: write
+#     steps:
+#       - name: "📥 Checkout Repository"
+#         uses: actions/checkout@v4
+
+#       - name: "🐍 Set up Python"
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.9'
+
+#       - name: "📜 Install Requests"
+#         run: pip install requests
+
+#       - name: "📜 Install Robot Framework"
+#         run: pip install robotframework
+
+#       - name: "🚀 Run Web Robot Framework Tests"
+#         if: ${{ inputs.type == 'web' }}
+#         run: |
+#           mkdir -p webapp_tests/robot-test-results
+#           robot --output webapp_tests/robot-test-results/output.xml \
+#                  --log webapp_tests/robot-test-results/log.html \
+#                  --report webapp_tests/robot-test-results/report.html \
+#                  webapp_tests/tests/
+                 
+#       - name: "🚀 Run API Robot Framework Tests"
+#         if: ${{ inputs.type == 'api' }}
+#         run: |
+#           mkdir -p webapp_tests/robot-test-results
+#           robot --output webapp_tests/robot-test-results/output.xml \
+#                  --log webapp_tests/robot-test-results/log.html \
+#                  --report webapp_tests/robot-test-results/report.html \
+#                  webapp_tests/api/
+
+#       - name: "⬆️ Upload Test Results"
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: robot-test-results-${{ inputs.type }}
+#           path: |
+#             webapp_tests/robot-test-results/output.xml
+#             webapp_tests/robot-test-results/log.html
+#             webapp_tests/robot-test-results/report.html
+#           # path: webapp_tests/robot-test-results/output.xml
+
+#       # - name: Upload Logs to GitHub Pages
+#       #   if: always()
+#       #   run: |
+#       #     mkdir -p gh-pages
+#       #     cp -r ./webapp_tests/robot-test-results$/* gh-pages/
+
+
+#       # - name: Deploy Logs to GitHub Pages
+#       #   if: always()
+#       #   uses: peaceiris/actions-gh-pages@v4
+#       #   with:
+#       #     github_token: ${{ secrets.GITHUB_TOKEN }}
+#       #     publish_dir: ./gh-pages
+
+#       - name: Add Log File Link to Summary
+#         if: always()
+#         run: |
+#           echo "### 📄 Robot Framework Logs" >> $GITHUB_STEP_SUMMARY
+#           echo "🔗 [View Test Logs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/log.html)" >> $GITHUB_STEP_SUMMARY
+
+#       # - name: "⬇️ Download Web Test Results"
+#       #   uses: actions/download-artifact@v4
+#       #   with:
+#       #     name: robot-test-results-${{ inputs.type }}
+#       #     path: webapp_tests/robot-test-results
+
+#       - name: "Debug webapp_tests"
+#         if: always()
+#         shell: bash
+#         run: | 
+#           pwd
+#           ls -lah webapp_tests
+
+#       - name: "Debug /robot-test-results"
+#         if: always()
+#         shell: bash
+#         run: | 
+#           pwd
+#           ls -lah webapp_tests/robot-test-results
+
+#       - name: "🐍 Run Test Results Parsing Script"
+#         if: always()
+#         run: python functions/display_test_results.py ./webapp_tests/robot-test-results/output.xml report.md
+
+#       - name: "Upload Parsed Test Results"
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: test-results-${{ inputs.job-name }}
+#           path: ./webapp_tests/robot-test-results/report.md
+
+#       - name: "📑 Display parsed test results"
+#         if: always()
+#         run: cat ./webapp_tests/robot-test-results/report.md >> $GITHUB_STEP_SUMMARY
+
+#       - name: "Debug /robot-test-results"
+#         if: always()
+#         shell: bash
+#         run: | 
+#           pwd
+#           ls -lah .
+
+#       # - name: "Post Test Results to GitHub Checks"
+#       #   # working-directory: test-workflow/webapp_tests
+#       #   if: always()
+#       #   env:
+#       #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+#       #     GITHUB_REPOSITORY: ${{ github.repository }}
+#       #     GITHUB_SHA: ${{ github.sha }}
+#       #     TEST_TYPE: ${{ inputs.type }}
+#       #     JOB_NAME: ${{ inputs.job-name }}
+#       #   run: python ./functions/check.py
         
