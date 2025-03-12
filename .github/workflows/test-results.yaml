@@ -63,6 +63,16 @@ jobs:
             echo "No output.xml files found. Skipping merging."
           fi
 
+      - name: Debug Merged Results
+        run: |
+          echo "Listing merged results:"
+          ls -la ./merged-results
+
+      - name: "📤 Upload Test Reports"
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./" 
+
       - name: "📤 Upload Test Reports"
         uses: actions/upload-pages-artifact@v3
         with:
