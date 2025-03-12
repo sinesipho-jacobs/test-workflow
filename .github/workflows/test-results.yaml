@@ -28,12 +28,12 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  merge-and-upload-results:
+  merge-and-deploy:
     needs: [call-web-tests, call-api-tests]
     runs-on: ubuntu-latest
     permissions:
-      pages: write   # Required for GitHub Pages
-      id-token: write # Needed for authentication
+      pages: write
+      id-token: write
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
@@ -86,17 +86,6 @@ jobs:
         with:
           path: "./merged-results"  # Uploads merged reports from the merged-results directory
 
-  deploy-reports:
-    needs: merge-and-upload-results
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
         uses: actions/deploy-pages@v4
