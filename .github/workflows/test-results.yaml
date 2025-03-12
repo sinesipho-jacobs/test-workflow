@@ -80,28 +80,45 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
-        - name: Find and merge Robot Framework logs
+        # - name: Find and merge Robot Framework logs
+        #   run: |
+        #     OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
+        #     if [ -n "$OUTPUT_FILES" ]; then
+        #       rebot --output ./webapp_tests/output.xml --log ./webapp_tests/index.html --report ./webapp_tests/report.html $OUTPUT_FILES
+        #     else
+        #       echo "No output.xml files found. Skipping merging."
+        #     fi
+
+        # - name: Copy Reports to root
+        #   run: |
+        #     cp ./webapp_tests/index.html ./
+        #     cp ./webapp_tests/output.xml ./
+        #     cp ./webapp_tests/report.html ./
+            
+        # - name: "Debug /docs"
+        #   if: always()
+        #   shell: bash
+        #   run: | 
+        #     pwd
+        #     ls -lah ./
+        - name: Find and Merge Robot Framework logs
           run: |
             OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
             if [ -n "$OUTPUT_FILES" ]; then
-              rebot --output ./webapp_tests/output.xml --log ./webapp_tests/index.html --report ./webapp_tests/report.html $OUTPUT_FILES
+              rebot --output ./output.xml --log ./index.html --report ./report.html $OUTPUT_FILES
             else
               echo "No output.xml files found. Skipping merging."
             fi
 
-        - name: Copy Reports to root
-          run: |
-            cp ./webapp_tests/index.html ./
-            cp ./webapp_tests/output.xml ./
-            cp ./webapp_tests/report.html ./
-            
-        - name: "Debug /docs"
+        - name: "📤 Deploy Reports to GitHub Pages"
           if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./
-        - name: Add GitHub Pages Link to Summary
+          uses: peaceiris/actions-gh-pages@v4
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./
+            keep_files: true  # Keeps previous reports, does not delete them
+
+        - name: "🔗 Add GitHub Pages Link to Summary"
           run: |
-            echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
+            echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+            echo "[View Robot Framework Reports](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
