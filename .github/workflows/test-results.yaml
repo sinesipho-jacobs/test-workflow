@@ -64,7 +64,7 @@ jobs:
           fi
 
       - name: "📤 Upload Test Reports"
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: "./"  # Uploads reports from the root directory
 
@@ -81,7 +81,7 @@ jobs:
     steps:
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
       - name: "🔗 Add GitHub Pages Link to Summary"
         run: |
