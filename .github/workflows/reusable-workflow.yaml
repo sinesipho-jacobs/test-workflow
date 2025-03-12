@@ -62,7 +62,31 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: robot-test-results-${{ inputs.type }}
-          path: webapp_tests/robot-test-results/output.xml
+          path: |
+            webapp_tests/robot-test-results/output.xml
+            webapp_tests/robot-test-results/log.html
+            webapp_tests/robot-test-results/report.html
+          # path: webapp_tests/robot-test-results/output.xml
+
+      - name: Upload Logs to GitHub Pages
+        if: always()
+        run: |
+          mkdir -p gh-pages
+          cp -r ./webapp_tests/robot-test-results$/* gh-pages/
+
+
+      - name: Deploy Logs to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+
+      - name: Add Log File Link to Summary
+        if: always()
+        run: |
+          echo "### 📄 Robot Framework Logs" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View Test Logs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/log.html)" >> $GITHUB_STEP_SUMMARY
 
       # - name: "⬇️ Download Web Test Results"
       #   uses: actions/download-artifact@v4
