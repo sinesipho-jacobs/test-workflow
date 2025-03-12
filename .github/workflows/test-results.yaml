@@ -60,27 +60,7 @@ jobs:
           with:
             path: ./webapp_tests/robot-test-results/
             
-        - name: Find and merge Robot Framework logs
-          run: |
-            OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
-            if [ -n "$OUTPUT_FILES" ]; then
-              rebot --output ./webapp_tests/output.xml --log ./webapp_tests/index.html --report ./webapp_tests/report.html $OUTPUT_FILES
-            else
-              echo "No output.xml files found. Skipping merging."
-            fi
-
-        - name: Copy Reports to docs
-          run: |
-            cp ./webapp_tests/index.html ./
-            cp ./webapp_tests/output.xml ./
-            cp ./webapp_tests/report.html ./
-            
-        - name: "Debug /docs"
-          if: always()
-          shell: bash
-          run: | 
-            pwd
-            ls -lah ./
+       
             
         - name: Run Test Results Parsing Script
           if: always()
@@ -100,7 +80,27 @@ jobs:
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
 
+        - name: Find and merge Robot Framework logs
+          run: |
+            OUTPUT_FILES=$(find ./webapp_tests/robot-test-results -name "output.xml" | tr '\n' ' ')
+            if [ -n "$OUTPUT_FILES" ]; then
+              rebot --output ./webapp_tests/output.xml --log ./webapp_tests/index.html --report ./webapp_tests/report.html $OUTPUT_FILES
+            else
+              echo "No output.xml files found. Skipping merging."
+            fi
 
+        - name: Copy Reports to root
+          run: |
+            cp ./webapp_tests/index.html ./
+            cp ./webapp_tests/output.xml ./
+            cp ./webapp_tests/report.html ./
+            
+        - name: "Debug /docs"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah ./
         - name: Add GitHub Pages Link to Summary
           run: |
             echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
