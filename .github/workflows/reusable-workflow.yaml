@@ -68,19 +68,19 @@ jobs:
             webapp_tests/robot-test-results/report.html
           # path: webapp_tests/robot-test-results/output.xml
 
-      - name: Upload Logs to GitHub Pages
-        if: always()
-        run: |
-          mkdir -p gh-pages
-          cp -r ./webapp_tests/robot-test-results$/* gh-pages/
+      # - name: Upload Logs to GitHub Pages
+      #   if: always()
+      #   run: |
+      #     mkdir -p gh-pages
+      #     cp -r ./webapp_tests/robot-test-results$/* gh-pages/
 
 
-      - name: Deploy Logs to GitHub Pages
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gh-pages
+      # - name: Deploy Logs to GitHub Pages
+      #   if: always()
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./gh-pages
 
       - name: Add Log File Link to Summary
         if: always()
