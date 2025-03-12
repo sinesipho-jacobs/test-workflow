@@ -24,8 +24,6 @@ jobs:
       actions: write
       contents: read
       checks: write
-      pages: write
-      id-token: write
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
