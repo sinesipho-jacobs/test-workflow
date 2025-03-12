@@ -24,6 +24,8 @@ jobs:
       actions: write
       contents: read
       checks: write
+      pages: write
+      id-token: write
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
@@ -67,11 +69,11 @@ jobs:
             webapp_tests/robot-test-results/log.html
             webapp_tests/robot-test-results/report.html
 
-      - name: Add Log File Link to Summary
-        if: always()
-        run: |
-          echo "### 📄 Robot Framework Logs" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 [View Test Logs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/log.html)" >> $GITHUB_STEP_SUMMARY
+      # - name: Add Log File Link to Summary
+      #   if: always()
+      #   run: |
+      #     echo "### 📄 Robot Framework Logs" >> $GITHUB_STEP_SUMMARY
+      #     echo "🔗 [View Test Logs](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/log.html)" >> $GITHUB_STEP_SUMMARY
 
       - name: "🐍 Run Test Results Parsing Script"
         if: always()
