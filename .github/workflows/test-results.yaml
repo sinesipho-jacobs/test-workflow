@@ -68,6 +68,19 @@ jobs:
             else
               echo "No output.xml files found. Skipping merging."
             fi
+
+        - name: Copy Reports to docs
+          run: |
+            cp ./webapp_tests/index.html ./
+            cp ./webapp_tests/output.xml ./
+            cp ./webapp_tests/report.html ./
+            
+        - name: "Debug /docs"
+          if: always()
+          shell: bash
+          run: | 
+            pwd
+            ls -lah ./
             
         - name: Run Test Results Parsing Script
           if: always()
@@ -86,3 +99,9 @@ jobs:
             GITHUB_SHA: ${{ github.sha }}
             JOB_NAME: ${{ github.job }}
           run: python ./functions/check.py
+
+
+        - name: Add GitHub Pages Link to Summary
+          run: |
+            echo "## Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+            echo "[View Robot Framework Reports](https://${{ github.actor }}.github.io/${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
