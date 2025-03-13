@@ -50,19 +50,27 @@ jobs:
           
       - name: Find and Merge Robot Framework logs
         run: |
-          RUN_NUMBER=${{ github.run_number }}
-          mkdir -p merged-results/run-$RUN_NUMBER
-          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/run-$RUN_NUMBER/ \;
+          mkdir -p merged-results/
+          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/ \;
 
-          OUTPUT_FILES=$(find ./merged-results/run-$RUN_NUMBER -name "output.xml" | tr '\n' ' ')
+          OUTPUT_FILES=$(find ./merged-results -name "output.xml" | tr '\n' ' ')
           if [ -n "$OUTPUT_FILES" ]; then
             echo "Merging output files: $OUTPUT_FILES"
-            rebot --output ./merged-results/run-$RUN_NUMBER/merged-output.xml --log ./merged-results/run-$RUN_NUMBER/merged-log.html --report ./merged-results/run-$RUN_NUMBER/merged-report.html $OUTPUT_FILES
+            rebot --output ./merged-results/output.xml --log ./merged-results/log.html --report ./merged-results/report.html $OUTPUT_FILES
           else
             echo "No output.xml files found. Skipping merging."
             exit 1
           fi
-
+      - name: "⬆️ Upload Test Results"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-test-results-${{ inputs.type }}
+          path: |
+            merged-results/output.xml
+            merged-results/log.html
+            merged-results/report.html
+            
       - name: Debug Merged Results
         run: |
           RUN_NUMBER=${{ github.run_number }}
@@ -75,20 +83,20 @@ jobs:
           echo "Contents of merged-report.html:"
           cat ./merged-results/run-$RUN_NUMBER/merged-report.html || echo "merged-report.html not found"
 
-      - name: "📤 Upload Reports to Cloudflare Pages"
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}  # Your custom API token
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}  # Your Cloudflare Account ID
-          projectName: your-project-name  # Replace with your Cloudflare Pages project name
-          directory: ./merged-results  # Upload the merged-results directory
-          branch: main  # Branch to deploy from (optional)
+      # - name: "📤 Upload Reports to Cloudflare Pages"
+      #   uses: cloudflare/pages-action@v1
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}  # Your custom API token
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}  # Your Cloudflare Account ID
+      #     projectName: your-project-name  # Replace with your Cloudflare Pages project name
+      #     directory: ./merged-results  # Upload the merged-results directory
+      #     branch: main  # Branch to deploy from (optional)
 
-      - name: "🔗 Add Cloudflare Pages Link to Summary"
-        run: |
-          RUN_NUMBER=${{ github.run_number }}
-          echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-          echo "[View Reports for Run $RUN_NUMBER](https://test-workflow.sinesiphojacobs.workers.dev/run-$RUN_NUMBER/merged-log.html)" >> $GITHUB_STEP_SUMMARY
+      # - name: "🔗 Add Cloudflare Pages Link to Summary"
+      #   run: |
+      #     RUN_NUMBER=${{ github.run_number }}
+      #     echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+      #     echo "[View Reports for Run $RUN_NUMBER](https://test-workflow.sinesiphojacobs.workers.dev/run-$RUN_NUMBER/merged-log.html)" >> $GITHUB_STEP_SUMMARY
 
 # name: Run and Merge Robot Tests
 
