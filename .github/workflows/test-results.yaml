@@ -47,6 +47,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./robot-test-results/
+
+      - name: Push logs to robot-logs repository
+        run: |
+          git clone https://github.com/sinesipho-jacobs/robot-logs.git
+          cd robot-logs
+          git checkout -b logs || git checkout logs
+          rm -rf docs/logs
+          mkdir -p docs/logs
+          cp -r ../results/* docs/logs/
+          echo "Latest Build: $GITHUB_RUN_NUMBER" > docs/latest-build.md
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git commit -m "Update test logs - Build $GITHUB_RUN_NUMBER"
+          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/sinesipho-jacobs/robot-logs.git logs --force
           
       - name: Find and Merge Robot Framework logs
         run: |
