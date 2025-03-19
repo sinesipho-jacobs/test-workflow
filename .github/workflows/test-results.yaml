@@ -79,7 +79,7 @@ jobs:
         with:
           name: merged-robot-logs
           path: |
-            merged-results/output.xml
-            merged-results/log.html
-            merged-results/report.html
+            webapp_tests/output.xml
+            webapp_tests/log.html
+            webapp_tests/report.html
             
