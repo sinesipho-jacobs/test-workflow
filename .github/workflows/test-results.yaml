@@ -110,11 +110,15 @@ jobs:
       - name: "🚀 Commit and Push Changes"
         run: |
           cd docs
-          git config --global sinesipho.jacobs
-          git config --global sinesipho.jacobs@gmail.com
+          git config --global user.name "sinesipho.jacobs"
+          git config --global user.email "sinesipho.jacobs@gmail.com"
           git add .
-          git commit -m "Update Robot Framework logs"
-          git push origin main
+          if [[ $(git status --porcelain) ]]; then
+            git commit -m "Update Robot Framework logs"
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
           
   build-and-deploy-mkdocs:
     needs: push-logs-to-mkdocs-repo
