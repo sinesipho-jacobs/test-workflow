@@ -115,12 +115,9 @@ jobs:
           git config --global user.name "sinesipho.jacobs"
           git config --global user.email "sinesipho.jacobs@gmail.com"
           
-          # Fetch the latest changes from the remote
-          git fetch origin
+          # Fetch the latest changes from the remote and rebase
+          git pull --rebase origin main
           
-          # Rebase your local branch on top of the remote main branch
-          git rebase origin/main || { echo "Rebase failed, resolving conflicts."; exit 1; }
-      
           # Stage and commit your changes
           git add .
           if [[ $(git status --porcelain) ]]; then
@@ -131,8 +128,6 @@ jobs:
           else
             echo "No changes to commit."
           fi
-
-
 
       # - name: "🚀 Commit and Push Changes"
       #   run: |
