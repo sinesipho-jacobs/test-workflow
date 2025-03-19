@@ -87,34 +87,32 @@ jobs:
     steps:
       - name: "📥 Checkout Main Repository"
         uses: actions/checkout@v4
-  
-      - name: "⬇️ Download Merged Test Results"
+
+      - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
-          name: merged-results
-          path: ./merged-results
-  
+          name: test-results
+          path: ./test-results
+
       - name: "📥 Clone MkDocs Repository"
         uses: actions/checkout@v4
         with:
           repository: <your-username>/mkdocs-reports
           path: mkdocs-reports
-          token: ${{ secrets.MAIN_REPO_PAT }}
-  
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+
       - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
-          cp -r ./merged-results/* ./mkdocs-reports/docs/
-  
+          cp -r ./test-results/* ./mkdocs-reports/docs/
+
       - name: "🚀 Commit and Push Changes"
         run: |
           cd mkdocs-reports
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "Company Bot"
+          git config --global user.email "company-bot@users.noreply.github.com"
           git add .
           git commit -m "Update Robot Framework logs"
           git push origin main
-          echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-          echo "[View Reports](${{ steps.deployment.outputs.page_url }}log.html)" >> $GITHUB_STEP_SUMMARY
 
   build-and-deploy-mkdocs:
     needs: push-logs-to-mkdocs-repo
@@ -125,7 +123,7 @@ jobs:
         with:
           repository: <your-username>/mkdocs-reports
           path: mkdocs-reports
-          token: ${{ secrets.MAIN_REPO_PAT }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
 
       - name: "📜 Install MkDocs"
         run: pip install mkdocs
