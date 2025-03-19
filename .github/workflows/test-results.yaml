@@ -34,12 +34,12 @@ jobs:
     steps:
       - name: "📥 Checkout Repository"
         uses: actions/checkout@v4
-  
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-  
+
       - name: "📜 Install Required Libraries"
         run: pip install requests robotframework
 
@@ -47,7 +47,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./robot-test-results/
-          
+
       - name: Find and Merge Robot Framework logs
         run: |
           mkdir -p merged-results/
@@ -61,7 +61,7 @@ jobs:
             echo "No output.xml files found. Skipping merging."
             exit 1
           fi
-          
+
       - name: "⬆️ Upload Merged Test Results"
         if: always()
         uses: actions/upload-artifact@v4
@@ -90,13 +90,23 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-  
+
     steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "⬇️ Download Merged Test Results"
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ./merged-results
+
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages  # Ensure you're deploying to the correct branch
+          branch: main  # Deploy to the `main` branch
+          folder: ./merged-results  # Deploy from the merged results directory
 
       - name: "🔗 Add GitHub Pages Link to Summary"
         run: |
