@@ -111,4 +111,4 @@ jobs:
       - name: "🔗 Add GitHub Pages Link to Summary"
         run: |
           echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-          echo "[View Reports](${{ steps.deployment.outputs.page_url }}/merged-results/log.html)" >> $GITHUB_STEP_SUMMARY
+          echo "[View Reports](${{ steps.deployment.outputs.page_url }}merged-results/log.html)" >> $GITHUB_STEP_SUMMARY
