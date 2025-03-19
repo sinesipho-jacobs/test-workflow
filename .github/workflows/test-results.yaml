@@ -136,6 +136,14 @@ jobs:
       - name: "📜 Install MkDocs Materials"
         run: pip install mkdocs-material
 
+      - name: "List All Repository Contents (including hidden)"
+        run: |
+          ls -lah
+
+      - name: "List All Repository Contents (including hidden)"
+        run: |
+          ls -lah
+
       - name: "🚀 Build MkDocs Site"
         run: |
           mkdocs build
@@ -151,4 +159,4 @@ jobs:
       - name: "🔗 Add Cloudflare Pages Link to Summary"
         run: |
           echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-          echo "[View Reports on Cloudflare Pages](https://<your-project-name>.pages.dev)" >> $GITHUB_STEP_SUMMARY
+          echo "[View Reports on Cloudflare Pages](https://robot-logs.pages.dev)" >> $GITHUB_STEP_SUMMARY
