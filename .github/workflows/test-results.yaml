@@ -68,7 +68,13 @@ jobs:
         with:
           name: merged-robot-logs
           path: |
-            webapp_tests/output.xml
-            webapp_tests/log.html
-            webapp_tests/report.html
+            merged-results/output.xml
+            merged-results/log.html
+            merged-results/report.html
+
+      - name: Download Merged Robot Logs
+        uses: actions/download-artifact@v4
+        with:
+          name: merged-robot-logs
+          path: ./
             
