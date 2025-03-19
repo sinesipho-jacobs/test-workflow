@@ -145,8 +145,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: mkdocs-reports
-          directory: mkdocs-reports/site
+          projectName: robot-logs
+          directory: site
 
       - name: "🔗 Add Cloudflare Pages Link to Summary"
         run: |
