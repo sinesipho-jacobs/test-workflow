@@ -82,21 +82,23 @@ jobs:
         run: python ./functions/check.py
 
   deploy-reports:
-      needs: merge-and-deploy
-      runs-on: ubuntu-latest
-      permissions:
-        pages: write
-        id-token: write
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
+    needs: merge-and-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
   
-      steps:
-        - name: "🚀 Deploy to GitHub Pages"
-          id: deployment
-          uses: actions/deploy-pages@v4
-  
-        - name: "🔗 Add GitHub Pages Link to Summary"
-          run: |
-            echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-            echo "[View Reports](${{ steps.deployment.outputs.page_url }}/merged-results/log.html)" >> $GITHUB_STEP_SUMMARY
+    steps:
+      - name: "🚀 Deploy to GitHub Pages"
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          branch: gh-pages  # Ensure you're deploying to the correct branch
+
+      - name: "🔗 Add GitHub Pages Link to Summary"
+        run: |
+          echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+          echo "[View Reports](${{ steps.deployment.outputs.page_url }}/merged-results/log.html)" >> $GITHUB_STEP_SUMMARY
