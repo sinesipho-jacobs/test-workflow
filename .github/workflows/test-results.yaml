@@ -149,8 +149,8 @@ jobs:
           cd docs
           mkdocs build
 
-      - name: Install Wrangler
-        run: npm install -g wrangler
+      # - name: Install Wrangler
+      #   run: npm install -g wrangler
 
       # - name: Deploy to Cloudflare Pages with Wrangler
       #   run: wrangler pages deploy docs/site --project-name=robot-logs
