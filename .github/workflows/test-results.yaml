@@ -114,13 +114,24 @@ jobs:
           cd docs
           git config --global user.name "sinesipho.jacobs"
           git config --global user.email "sinesipho.jacobs@gmail.com"
+          
+          # Fetch the latest changes from the remote
+          git fetch origin
+          
+          # Merge any remote changes (if necessary)
+          git merge origin/main --no-edit || echo "No changes to merge"
+          
+          # Stage and commit your changes
           git add .
           if [[ $(git status --porcelain) ]]; then
             git commit -m "Update Robot Framework logs"
+            
+            # Push changes using the GitHub Actions token
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
           else
             echo "No changes to commit."
           fi
+
 
       # - name: "🚀 Commit and Push Changes"
       #   run: |
