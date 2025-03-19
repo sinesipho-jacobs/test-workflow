@@ -117,7 +117,7 @@ jobs:
           git add .
           if [[ $(git status --porcelain) ]]; then
             git commit -m "Update Robot Framework logs"
-            git push origin master
+            git push origin main
           else
             echo "No changes to commit."
           fi
