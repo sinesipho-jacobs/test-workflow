@@ -86,6 +86,8 @@ jobs:
   push-logs-to-mkdocs-repo:
     needs: merge-and-deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: "📥 Checkout Main Repository"
         uses: actions/checkout@v4
