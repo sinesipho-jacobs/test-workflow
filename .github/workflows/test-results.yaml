@@ -66,7 +66,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: merged-robot-logs
+          name: github-pages
           path: |
             merged-results/output.xml
             merged-results/log.html
