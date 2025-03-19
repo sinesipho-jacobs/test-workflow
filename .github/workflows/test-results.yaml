@@ -148,7 +148,13 @@ jobs:
         run: |
           cd docs
           mkdocs build
-
+          
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy docs/site --project-name=robot-logs
       # - name: Install Wrangler
       #   run: npm install -g wrangler
 
@@ -163,13 +169,7 @@ jobs:
       #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: "🚀 Deploy to Cloudflare Pages"
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: robot-logs
-          directory: docs/site
+      
 
       - name: "🔗 Add Cloudflare Pages Link to Summary"
         run: |
