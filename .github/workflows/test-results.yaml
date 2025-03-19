@@ -66,7 +66,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages
+          name: merged-results
           path: |
             merged-results/output.xml
             merged-results/log.html
@@ -82,7 +82,7 @@ jobs:
         run: python ./functions/check.py
 
   push-logs-to-mkdocs-repo:
-    needs: merge-and-deploy
+    needs: run-tests
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Main Repository"
@@ -91,29 +91,29 @@ jobs:
       - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
-          name: test-results
-          path: ./test-results
+          name: merged-results
+          path: ./merged-results
 
       - name: "📥 Clone MkDocs Repository"
         uses: actions/checkout@v4
         with:
-          repository: <your-username>/mkdocs-reports
-          path: mkdocs-reports
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          repository: https://github.com/sinesipho-jacobs/robot-logs/tree/main/docs
+          path: docs
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN instead of PAT
 
       - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
-          cp -r ./test-results/* ./mkdocs-reports/docs/
+          cp -r ./merged-results/* ./docs/
 
       - name: "🚀 Commit and Push Changes"
         run: |
           cd mkdocs-reports
-          git config --global user.name "Company Bot"
-          git config --global user.email "company-bot@users.noreply.github.com"
+          git config --global sinesipho.jacobs
+          git config --global sinesipho.jacobs@gmail.com
           git add .
           git commit -m "Update Robot Framework logs"
           git push origin main
-
+          
   build-and-deploy-mkdocs:
     needs: push-logs-to-mkdocs-repo
     runs-on: ubuntu-latest
@@ -123,7 +123,7 @@ jobs:
         with:
           repository: <your-username>/mkdocs-reports
           path: mkdocs-reports
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN instead of PAT
 
       - name: "📜 Install MkDocs"
         run: pip install mkdocs
