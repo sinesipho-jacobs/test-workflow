@@ -91,24 +91,21 @@ jobs:
     steps:
       - name: "📥 Checkout Main Repository"
         uses: actions/checkout@v4
-
+  
       - name: "⬇️ Download Test Results"
         uses: actions/download-artifact@v4
         with:
           name: merged-results
           path: ./merged-results
-
+  
       - name: "📥 Clone MkDocs Repository"
-        uses: actions/checkout@v4
-        with:
-          repository: sinesipho-jacobs/robot-logs
-          path: docs
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN instead of PAT
-
+        run: |
+          git clone https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git docs
+  
       - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
           cp -r ./merged-results/* ./docs/
-
+  
       - name: "🚀 Commit and Push Changes"
         run: |
           cd docs
@@ -117,7 +114,7 @@ jobs:
           git add .
           if [[ $(git status --porcelain) ]]; then
             git commit -m "Update Robot Framework logs"
-            git push origin main
+            git push https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git main
           else
             echo "No changes to commit."
           fi
