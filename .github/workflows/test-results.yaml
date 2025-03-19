@@ -52,7 +52,7 @@ jobs:
         run: |
           mkdir -p merged-results/
           find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/ \;
-
+  
           OUTPUT_FILES=$(find ./merged-results -name "output.xml" | tr '\n' ' ')
           if [ -n "$OUTPUT_FILES" ]; then
             echo "Merging output files: $OUTPUT_FILES"
@@ -60,12 +60,25 @@ jobs:
           else
             echo "No output.xml files found. Skipping merging."
             exit 1
-          fi
-      - name: "⬆️ Upload Test Results"
+          fi   
+      # - name: Find and Merge Robot Framework logs
+      #   run: |
+      #     mkdir -p merged-results/
+      #     find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/ \;
+
+      #     OUTPUT_FILES=$(find ./merged-results -name "output.xml" | tr '\n' ' ')
+      #     if [ -n "$OUTPUT_FILES" ]; then
+      #       echo "Merging output files: $OUTPUT_FILES"
+      #       rebot --output ./merged-results/output.xml --log ./merged-results/log.html --report ./merged-results/report.html $OUTPUT_FILES
+      #     else
+      #       echo "No output.xml files found. Skipping merging."
+      #       exit 1
+      #     fi
+      - name: "⬆️ Upload Merged Test Results"
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: robot-test-results-${{ inputs.type }}
+          name: merged-robot-logs
           path: |
             merged-results/output.xml
             merged-results/log.html
