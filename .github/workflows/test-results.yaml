@@ -146,6 +146,7 @@ jobs:
 
       - name: "🚀 Build MkDocs Site"
         run: |
+          cd docs
           mkdocs build
 
       - name: "🚀 Deploy to Cloudflare Pages"
