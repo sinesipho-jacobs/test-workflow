@@ -118,9 +118,9 @@ jobs:
           # Fetch the latest changes from the remote
           git fetch origin
           
-          # Merge any remote changes (if necessary)
-          git merge origin/main --no-edit || echo "No changes to merge"
-          
+          # Rebase your local branch on top of the remote main branch
+          git rebase origin/main || { echo "Rebase failed, resolving conflicts."; exit 1; }
+      
           # Stage and commit your changes
           git add .
           if [[ $(git status --porcelain) ]]; then
@@ -131,6 +131,7 @@ jobs:
           else
             echo "No changes to commit."
           fi
+
 
 
       # - name: "🚀 Commit and Push Changes"
