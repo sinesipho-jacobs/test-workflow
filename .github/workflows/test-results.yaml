@@ -105,22 +105,22 @@ jobs:
         run: |
           # Move files from merged-results to the root directory
           mv ./merged-results/* .
-
+  
       - name: "List Root Directory"
         run: |
           ls -R .
-
-      - name: "List Deployment URL"
-        run: |
-          echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
-    
+  
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
         uses: actions/deploy-pages@v4
         with:
           branch: main  # Deploy to the `main` branch
           folder: .     # Deploy from the root directory
-    
+  
+      - name: "Debug Deployment Output"
+        run: |
+          echo "Deployment Output: ${{ steps.deployment.outputs.page_url }}"
+  
       - name: "🔗 Add GitHub Pages Link to Summary"
         run: |
           echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
