@@ -30,6 +30,8 @@ jobs:
 
   merge-and-deploy:
     needs: [call-web-tests, call-api-tests]
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Repository"
