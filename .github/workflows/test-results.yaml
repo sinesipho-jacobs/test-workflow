@@ -81,47 +81,69 @@ jobs:
           JOB_NAME: ${{ github.job }}
         run: python ./functions/check.py
 
-  deploy-reports:
+  push-logs-to-mkdocs-repo:
     needs: merge-and-deploy
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-  
     steps:
-      - name: "📥 Checkout Repository"
+      - name: "📥 Checkout Main Repository"
         uses: actions/checkout@v4
   
       - name: "⬇️ Download Merged Test Results"
         uses: actions/download-artifact@v4
         with:
-          name: github-pages
+          name: merged-results
           path: ./merged-results
   
-      - name: "Move Files to Root"
-        run: |
-          # Move files from merged-results to the root directory
-          mv ./merged-results/* .
-  
-      - name: "List Root Directory"
-        run: |
-          ls -R .
-  
-      - name: "🚀 Deploy to GitHub Pages"
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: "📥 Clone MkDocs Repository"
+        uses: actions/checkout@v4
         with:
-          branch: main  # Deploy to the `main` branch
-          folder: .     # Deploy from the root directory
+          repository: <your-username>/mkdocs-reports
+          path: mkdocs-reports
+          token: ${{ secrets.MAIN_REPO_PAT }}
   
-      - name: "Debug Deployment Output"
+      - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
-          echo "Deployment Output: ${{ steps.deployment.outputs.page_url }}"
+          cp -r ./merged-results/* ./mkdocs-reports/docs/
   
-      - name: "🔗 Add GitHub Pages Link to Summary"
+      - name: "🚀 Commit and Push Changes"
         run: |
+          cd mkdocs-reports
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Update Robot Framework logs"
+          git push origin main
           echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
           echo "[View Reports](${{ steps.deployment.outputs.page_url }}log.html)" >> $GITHUB_STEP_SUMMARY
+
+  build-and-deploy-mkdocs:
+    needs: push-logs-to-mkdocs-repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout MkDocs Repository"
+        uses: actions/checkout@v4
+        with:
+          repository: <your-username>/mkdocs-reports
+          path: mkdocs-reports
+          token: ${{ secrets.MAIN_REPO_PAT }}
+
+      - name: "📜 Install MkDocs"
+        run: pip install mkdocs
+
+      - name: "🚀 Build MkDocs Site"
+        run: |
+          cd mkdocs-reports
+          mkdocs build
+
+      - name: "🚀 Deploy to Cloudflare Pages"
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: mkdocs-reports
+          directory: mkdocs-reports/site
+
+      - name: "🔗 Add Cloudflare Pages Link to Summary"
+        run: |
+          echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+          echo "[View Reports on Cloudflare Pages](https://<your-project-name>.pages.dev)" >> $GITHUB_STEP_SUMMARY
