@@ -71,7 +71,7 @@ def post_github_check(results, report_content):
 def run_robot_tests():
     """Run Robot Framework tests, parse results, and post them to GitHub."""
     print(f"Current Working Directory: {os.getcwd()}")
-    main_dir = './webapp_tests'  # Main directory where subdirectories with output.xml are located
+    main_dir = './merged-results'  # Main directory where subdirectories with output.xml are located
     report_file = os.path.abspath('./webapp_tests/robot-test-results/report.md')
 
     # Collect all output.xml files from subdirectories
