@@ -126,12 +126,15 @@ jobs:
       - name: "📥 Checkout MkDocs Repository"
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/sinesipho-jacobs/robot-logs/
+          repository: sinesipho-jacobs/robot-logs/
           path: docs
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN instead of PAT
+          token: ${{ secrets.ROBOT_LOGS_PAT }}  # Use GITHUB_TOKEN instead of PAT
 
       - name: "📜 Install MkDocs"
         run: pip install mkdocs
+        
+      - name: "📜 Install MkDocs Materials"
+        run: pip install mkdocs-material
 
       - name: "🚀 Build MkDocs Site"
         run: |
