@@ -99,7 +99,7 @@ jobs:
       - name: "📥 Clone MkDocs Repository"
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/sinesipho-jacobs/robot-logs/
+          repository: sinesipho-jacobs/robot-logs
           path: docs
           token: ${{ secrets.GITHUB_TOKEN }}  # Use GITHUB_TOKEN instead of PAT
 
