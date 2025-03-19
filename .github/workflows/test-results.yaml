@@ -84,7 +84,7 @@ jobs:
         run: python ./functions/check.py
 
   push-logs-to-mkdocs-repo:
-    needs: run-tests
+    needs: merge-and-deploy
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Main Repository"
