@@ -126,7 +126,7 @@ jobs:
       - name: "📥 Checkout MkDocs Repository"
         uses: actions/checkout@v4
         with:
-          repository: sinesipho-jacobs/robot-logs/
+          repository: sinesipho-jacobs/robot-logs
           path: docs
           token: ${{ secrets.ROBOT_LOGS_PAT }}  # Use GITHUB_TOKEN instead of PAT
 
