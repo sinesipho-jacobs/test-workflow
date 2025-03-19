@@ -72,9 +72,12 @@ jobs:
             merged-results/log.html
             merged-results/report.html
 
-      - name: Download Merged Robot Logs
-        uses: actions/download-artifact@v4
-        with:
-          name: merged-robot-logs
-          path: ./
-            
+      - name: "Post Test Results to GitHub Checks"
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          JOB_NAME: ${{ github.job }}
+        run: python ./functions/check.py
+              
