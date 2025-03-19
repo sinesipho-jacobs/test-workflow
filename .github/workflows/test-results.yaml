@@ -142,7 +142,7 @@ jobs:
 
       - name: "List All Repository Contents (including hidden)"
         run: |
-          ls -lah
+          ls -lah docs
 
       - name: "🚀 Build MkDocs Site"
         run: |
