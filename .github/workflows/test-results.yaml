@@ -149,27 +149,27 @@ jobs:
           cd docs
           mkdocs build
 
-      - name: Install Wrangler
-        run: npm install -g wrangler
+      # - name: Install Wrangler
+      #   run: npm install -g wrangler
 
-      - name: Print Environment Variables
-        run: |
-          echo "CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}"
-          echo "CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}"
+      # - name: Print Environment Variables
+      #   run: |
+      #     echo "CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}"
+      #     echo "CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}"
 
-      - name: Deploy to Cloudflare Pages with Wrangler
-        run: wrangler pages deploy docs/site --project-name=robot-logs
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # - name: Deploy to Cloudflare Pages with Wrangler
+      #   run: wrangler pages deploy docs/site --project-name=robot-logs
+      #   env:
+      #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # - name: "🚀 Deploy to Cloudflare Pages"
-      #   uses: cloudflare/pages-action@v1
-      #   with:
-      #     apiToken: ${{ secrets.CF_API_TOKEN }}
-      #     accountId: ${{ secrets.CF_ACCOUNT_ID }}
-      #     projectName: robot-logs
-      #     directory: docs/site
+      - name: "🚀 Deploy to Cloudflare Pages"
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          projectName: robot-logs
+          directory: docs/site
 
       - name: "🔗 Add Cloudflare Pages Link to Summary"
         run: |
