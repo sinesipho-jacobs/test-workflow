@@ -86,17 +86,17 @@ jobs:
             merged-results/log.html
             merged-results/report.html
             
-      - name: Debug Merged Results
-        run: |
-          RUN_NUMBER=${{ github.run_number }}
-          echo "Listing merged results for run $RUN_NUMBER:"
-          ls -la ./merged-results/run-$RUN_NUMBER
-          echo "Contents of merged-output.xml:"
-          cat ./merged-results/run-$RUN_NUMBER/merged-output.xml || echo "merged-output.xml not found"
-          echo "Contents of merged-log.html:"
-          cat ./merged-results/run-$RUN_NUMBER/merged-log.html || echo "merged-log.html not found"
-          echo "Contents of merged-report.html:"
-          cat ./merged-results/run-$RUN_NUMBER/merged-report.html || echo "merged-report.html not found"
+      # - name: Debug Merged Results
+      #   run: |
+      #     RUN_NUMBER=${{ github.run_number }}
+      #     echo "Listing merged results for run $RUN_NUMBER:"
+      #     ls -la ./merged-results/run-$RUN_NUMBER
+      #     echo "Contents of merged-output.xml:"
+      #     cat ./merged-results/run-$RUN_NUMBER/merged-output.xml || echo "merged-output.xml not found"
+      #     echo "Contents of merged-log.html:"
+      #     cat ./merged-results/run-$RUN_NUMBER/merged-log.html || echo "merged-log.html not found"
+      #     echo "Contents of merged-report.html:"
+      #     cat ./merged-results/run-$RUN_NUMBER/merged-report.html || echo "merged-report.html not found"
 
       # - name: "📤 Upload Reports to Cloudflare Pages"
       #   uses: cloudflare/pages-action@v1
