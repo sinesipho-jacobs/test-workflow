@@ -109,7 +109,6 @@ jobs:
   
       - name: "🚀 Commit and Push Changes"
         run: |
-          cd docs
           git config --global user.name "sinesipho.jacobs"
           git config --global user.email "sinesipho.jacobs@gmail.com"
           git add .
