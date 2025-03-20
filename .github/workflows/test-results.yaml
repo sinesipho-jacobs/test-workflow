@@ -157,19 +157,19 @@ jobs:
           echo "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
           echo "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
 
-      - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy docs/site --project-name=robot-logs
+      # - name: Deploy
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: pages deploy docs/site --project-name=robot-logs
 
-      # - name: Deploy using Cloudflare API
-      #   run: |
-      #     curl -X POST "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/robot-logs/deployments" \
-      #       -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-      #       -H "Content-Type: application/json" \
-      #       --data '{"branch": "main", "commit_hash": "${{ github.sha }}"}'
+      - name: Deploy using Cloudflare API
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/robot-logs/deployments" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"branch": "main", "commit_hash": "${{ github.sha }}"}'
 
       # - name: Deploy to Cloudflare Pages with Wrangler
       #   run: wrangler pages deploy docs/site --project-name=robot-logs
