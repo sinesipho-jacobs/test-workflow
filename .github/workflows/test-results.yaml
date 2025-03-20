@@ -136,6 +136,11 @@ jobs:
         
       - name: "📜 Install MkDocs Materials"
         run: pip install mkdocs-material
+        
+      - name: "🔨 Build MkDocs Site"
+        run: |
+          cd robot-logs
+          mkdocs build
 
       - name: "List All Repository Contents (including hidden)"
         run: |
@@ -144,17 +149,17 @@ jobs:
       - name: Install Wrangler
         run: npm install -g wrangler
 
-      - name: Print Environment Variables
-        run: |
-          echo "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
-          echo "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+      # - name: Print Environment Variables
+      #   run: |
+      #     echo "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
+      #     echo "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
 
       # - name: Deploy
       #   uses: cloudflare/wrangler-action@v3
       #   with:
       #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      #     command: pages deploy docs/site --project-name=robot-logs
+      #     command: pages deploy /site --project-name=robot-logs
 
       - name: Deploy using Cloudflare API
         run: |
