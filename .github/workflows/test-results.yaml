@@ -100,7 +100,7 @@ jobs:
   
       - name: "📥 Clone MkDocs Repository"
         run: |
-          git clone https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git docs
+          git clone https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git
   
       - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
