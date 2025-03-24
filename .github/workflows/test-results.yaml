@@ -29,6 +29,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   merge-and-deploy:
+    if: always()
     needs: [call-web-tests, call-api-tests]
     permissions:
       contents: write
