@@ -84,6 +84,7 @@ jobs:
         run: python ./functions/check.py
 
   push-logs-to-mkdocs-repo:
+    if: always()
     needs: merge-and-deploy
     runs-on: ubuntu-latest
     permissions:
@@ -134,6 +135,7 @@ jobs:
           fi
           
   build-and-deploy-mkdocs:
+    if: always()
     needs: push-logs-to-mkdocs-repo
     runs-on: ubuntu-latest
     steps:
