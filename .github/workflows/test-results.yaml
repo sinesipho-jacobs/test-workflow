@@ -121,20 +121,35 @@ jobs:
           rm -rf ./robot-logs/docs/latest
           cp -r ./robot-logs/docs/$BUILD_NUMBER ./robot-logs/docs/latest
 
-      # - name: "🔗 Update mkdocs.yml with Build Links"
-      #   run: |
-      #     BUILDS=$(ls -d ./robot-logs/docs/*/ | grep -Eo '[0-9]+' | sort -nr)  # List and sort builds
+      - name: "🔗 Update mkdocs.yml with Build Links"
+        run: |
+          MKDOCS_CONFIG="./robot-logs/mkdocs.yml"
+      
+          # Backup the original mkdocs.yml
+          cp $MKDOCS_CONFIG $MKDOCS_CONFIG.bak
+      
+          # Extract everything before the "nav:" section
+          awk '/^nav:/{exit} {print}' $MKDOCS_CONFIG.bak > $MKDOCS_CONFIG
+      
+          echo "nav:" >> $MKDOCS_CONFIG
+          echo "  - Home: index.md" >> $MKDOCS_CONFIG
+          echo "  - Test Reports:" >> $MKDOCS_CONFIG
+          echo "      - Latest Report: reports.md" >> $MKDOCS_CONFIG
+      
+          # Generate list of builds dynamically
+          BUILDS=$(ls -d ./robot-logs/docs/*/ 2>/dev/null | grep -Eo '[0-9]+' | sort -nr || true)
+      
+          if [[ -z "$BUILDS" ]]; then
+            echo "      - No previous builds available" >> $MKDOCS_CONFIG
+          else
+            for BUILD in $BUILDS; do
+              echo "      - Build $BUILD: $BUILD/log.html" >> $MKDOCS_CONFIG
+            done
+          fi
+      
+          # Debug: Show the updated file
+          cat $MKDOCS_CONFIG
           
-      #     echo "nav:" > ./robot-logs/mkdocs.yml
-      #     echo "  - Home: index.md" >> ./robot-logs/mkdocs.yml
-      #     echo "  - Latest Logs: latest/log.html" >> ./robot-logs/mkdocs.yml
-      
-      #     for BUILD in $BUILDS; do
-      #       echo "  - Build $BUILD: $BUILD/log.html" >> ./robot-logs/mkdocs.yml
-      #     done
-      
-      #     cat ./robot-logs/mkdocs.yml  # Debugging: show the updated file
-  
       - name: "🚀 Commit and Push Changes"
         run: |
           cd robot-logs
