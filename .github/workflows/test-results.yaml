@@ -105,15 +105,7 @@ jobs:
   
       - name: "📂 Copy Logs to MkDocs Docs Folder"
         run: |
-          BUILD_NUMBER=${{ github.run_number }}  # Get unique build number
-    
-          # Create a directory for this build and copy logs there
-          mkdir -p ./robot-logs/docs/$BUILD_NUMBER
-          cp -r ./merged-results/* ./robot-logs/docs/$BUILD_NUMBER/
-      
-          # Update 'latest' folder to always point to the newest logs
-          rm -rf ./robot-logs/docs/latest
-          cp -r ./robot-logs/docs/$BUILD_NUMBER ./robot-logs/docs/latest
+          cp -r ./merged-results/* ./robot-logs/docs/
   
       - name: "🚀 Commit and Push Changes"
         run: |
