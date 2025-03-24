@@ -121,6 +121,19 @@ jobs:
           rm -rf ./robot-logs/docs/latest
           cp -r ./robot-logs/docs/$BUILD_NUMBER ./robot-logs/docs/latest
 
+      - name: "🔗 Update mkdocs.yml with Build Links"
+        run: |
+          BUILDS=$(ls -d ./robot-logs/docs/*/ | grep -Eo '[0-9]+' | sort -nr)  # List and sort builds
+          
+          echo "nav:" > ./robot-logs/mkdocs.yml
+          echo "  - Home: index.md" >> ./robot-logs/mkdocs.yml
+          echo "  - Latest Logs: latest/log.html" >> ./robot-logs/mkdocs.yml
+      
+          for BUILD in $BUILDS; do
+            echo "  - Build $BUILD: $BUILD/log.html" >> ./robot-logs/mkdocs.yml
+          done
+      
+          cat ./robot-logs/mkdocs.yml  # Debugging: show the updated file
   
       - name: "🚀 Commit and Push Changes"
         run: |
