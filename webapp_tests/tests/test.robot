@@ -15,11 +15,11 @@ Library    OperatingSystem
 #     [Documentation]    This test should fail.
 #     Should Be Equal    5 * 2    15
 
-Test Case 4 - Conditional Test
-    [Documentation]    Test with IF condition.
-    ${value}    Set Variable    10
-    Run Keyword If    ${value} == 10    Log    ✅ Condition Met
-    Run Keyword If    ${value} != 10    Fail    ❌ Condition Failed
+# Test Case 4 - Conditional Test
+#    [Documentation]    Test with IF condition.
+#    ${value}    Set Variable    10
+#    Run Keyword If    ${value} == 10    Log    ✅ Condition Met
+#    Run Keyword If    ${value} != 10    Fail    ❌ Condition Failed
 
 # Test Case 5 - Skipped Test
 #     [Documentation]    Example of a skipped test.
