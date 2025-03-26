@@ -33,6 +33,7 @@ jobs:
     needs: [call-web-tests, call-api-tests]
     permissions:
       contents: write
+      actions: write
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Repository"
