@@ -153,8 +153,8 @@ jobs:
       - name: "🚀 Commit and Push Changes"
         run: |
           cd robot-logs
-          git config --global user.name "sinesipho.jacobs"
-          git config --global user.email "sinesipho.jacobs@gmail.com"
+          # git config --global user.name "sinesipho.jacobs"
+          # git config --global user.email "sinesipho.jacobs@gmail.com"
           git add .
           if [[ $(git status --porcelain) ]]; then
             git commit -m "Update Robot Framework logs"
