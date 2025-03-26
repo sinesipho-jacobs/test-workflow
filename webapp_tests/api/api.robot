@@ -4,7 +4,7 @@ Library    OperatingSystem
 
 *** Test Cases ***
 Test Case 1
-    Should Be Equal    10 + 10    1010
+    Sleep    3
 
 # Test Case 2 - Another Passing Test
 #     [Documentation]    Another passing test.
