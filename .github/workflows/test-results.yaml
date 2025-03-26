@@ -94,9 +94,9 @@ jobs:
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.ROBOT_LOGS_PAT }}" \
             /repos/sinesipho-jacobs/robot-logs/dispatches \
             -f event_type=deploy-mkdocs \
             -f client_payload='{"run_id": "${{ steps.run_id.outputs.run_id }}"}'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.ROBOT_LOGS_PAT }}
