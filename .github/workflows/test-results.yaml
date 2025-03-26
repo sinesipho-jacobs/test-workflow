@@ -84,22 +84,6 @@ jobs:
           JOB_NAME: ${{ github.job }}
         run: python ./functions/check.py
 
-  push-logs-to-mkdocs-repo:
-    if: always()
-    needs: merge-and-deploy
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: "📥 Checkout Main Repository"
-        uses: actions/checkout@v4
-  
-      - name: "⬇️ Download Test Results"
-        uses: actions/download-artifact@v4
-        with:
-          name: merged-results
-          path: ./merged-results
-  
       - name: "📥 Clone MkDocs Repository"
         run: |
           git clone https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git
@@ -121,35 +105,6 @@ jobs:
           rm -rf ./robot-logs/docs/latest
           cp -r ./robot-logs/docs/$BUILD_NUMBER ./robot-logs/docs/latest
 
-      - name: "🔗 Update mkdocs.yml with Build Links"
-        run: |
-          MKDOCS_CONFIG="./robot-logs/mkdocs.yml"
-      
-          # Backup the original mkdocs.yml
-          cp $MKDOCS_CONFIG $MKDOCS_CONFIG.bak
-      
-          # Extract everything before the "nav:" section
-          awk '/^nav:/{exit} {print}' $MKDOCS_CONFIG.bak > $MKDOCS_CONFIG
-      
-          echo "nav:" >> $MKDOCS_CONFIG
-          echo "  - Home: index.md" >> $MKDOCS_CONFIG
-          echo "  - Test Reports:" >> $MKDOCS_CONFIG
-          echo "      - Latest Report: reports.md" >> $MKDOCS_CONFIG
-      
-          # Generate list of builds dynamically
-          BUILDS=$(ls -d ./robot-logs/docs/*/ 2>/dev/null | grep -Eo '[0-9]+' | sort -nr || true)
-      
-          if [[ -z "$BUILDS" ]]; then
-            echo "      - No previous builds available" >> $MKDOCS_CONFIG
-          else
-            for BUILD in $BUILDS; do
-              echo "      - Build $BUILD: $BUILD/log.html" >> $MKDOCS_CONFIG
-            done
-          fi
-      
-          # Debug: Show the updated file
-          cat $MKDOCS_CONFIG
-          
       - name: "🚀 Commit and Push Changes"
         run: |
           cd robot-logs
@@ -162,65 +117,151 @@ jobs:
           else
             echo "No changes to commit."
           fi
-          
-  build-and-deploy-mkdocs:
-    if: always()
-    needs: push-logs-to-mkdocs-repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout MkDocs Repository"
-        uses: actions/checkout@v4
-        with:
-          repository: sinesipho-jacobs/robot-logs
-          path: robot-logs
-          token: ${{ secrets.ROBOT_LOGS_PAT }}  # Use GITHUB_TOKEN instead of PAT
 
-      - name: "📜 Install MkDocs"
-        run: pip install mkdocs
-        
-      - name: "📜 Install MkDocs Materials"
-        run: pip install mkdocs-material
-        
-      - name: "🔨 Build MkDocs Site"
-        run: |
-          cd robot-logs
-          mkdocs build
-
-      - name: "List All Repository Contents (including hidden)"
-        run: |
-          ls -lah
-
-      - name: Install Wrangler
-        run: npm install -g wrangler
-
-      # - name: Print Environment Variables
-      #   run: |
-      #     echo "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
-      #     echo "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
-
-      # - name: Deploy
-      #   uses: cloudflare/wrangler-action@v3
-      #   with:
-      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      #     command: pages deploy /site --project-name=robot-logs
-
-      - name: Deploy using Cloudflare API
+      - name: Deploy to Cloudflare Pages
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/robot-logs/deployments" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data '{"branch": "main", "commit_hash": "${{ github.sha }}"}'
+          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"branch": "main", "commit_hash": "${{ github.sha }}"}'
 
-      # - name: Deploy to Cloudflare Pages with Wrangler
-      #   run: wrangler pages deploy docs/site --project-name=robot-logs
-      #   env:
-      #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  # push-logs-to-mkdocs-repo:
+  #   if: always()
+  #   needs: merge-and-deploy
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - name: "📥 Checkout Main Repository"
+  #       uses: actions/checkout@v4
+  
+  #     - name: "⬇️ Download Test Results"
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: merged-results
+  #         path: ./merged-results
+  
+  #     - name: "📥 Clone MkDocs Repository"
+  #       run: |
+  #         git clone https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git
+  #         ls -l robot-logs
+  
+      # - name: "📂 Copy Logs to MkDocs Docs Folder"
+      #   run: |
+      #     cp -r ./merged-results/* ./robot-logs/docs/
+
+      # - name: "📂 Copy Logs to MkDocs Docs Folder"
+      #   run: |
+      #     BUILD_NUMBER=${{ github.run_number }}  # Get unique build number
+          
+      #     # Create a directory for this build and copy logs there
+      #     mkdir -p ./robot-logs/docs/$BUILD_NUMBER
+      #     cp -r ./merged-results/* ./robot-logs/docs/$BUILD_NUMBER/
+      
+          # Update 'latest' folder to always point to the newest logs
+          # rm -rf ./robot-logs/docs/latest
+          # cp -r ./robot-logs/docs/$BUILD_NUMBER ./robot-logs/docs/latest
+
+  #     - name: "🔗 Update mkdocs.yml with Build Links"
+  #       run: |
+  #         MKDOCS_CONFIG="./robot-logs/mkdocs.yml"
+      
+  #         # Backup the original mkdocs.yml
+  #         cp $MKDOCS_CONFIG $MKDOCS_CONFIG.bak
+      
+  #         # Extract everything before the "nav:" section
+  #         awk '/^nav:/{exit} {print}' $MKDOCS_CONFIG.bak > $MKDOCS_CONFIG
+      
+  #         echo "nav:" >> $MKDOCS_CONFIG
+  #         echo "  - Home: index.md" >> $MKDOCS_CONFIG
+  #         echo "  - Test Reports:" >> $MKDOCS_CONFIG
+  #         echo "      - Latest Report: reports.md" >> $MKDOCS_CONFIG
+      
+  #         # Generate list of builds dynamically
+  #         BUILDS=$(ls -d ./robot-logs/docs/*/ 2>/dev/null | grep -Eo '[0-9]+' | sort -nr || true)
+      
+  #         if [[ -z "$BUILDS" ]]; then
+  #           echo "      - No previous builds available" >> $MKDOCS_CONFIG
+  #         else
+  #           for BUILD in $BUILDS; do
+  #             echo "      - Build $BUILD: $BUILD/log.html" >> $MKDOCS_CONFIG
+  #           done
+  #         fi
+      
+  #         # Debug: Show the updated file
+  #         cat $MKDOCS_CONFIG
+          
+  #     - name: "🚀 Commit and Push Changes"
+  #       run: |
+  #         cd robot-logs
+  #         git config --global user.name "sinesipho.jacobs"
+  #         git config --global user.email "sinesipho.jacobs@gmail.com"
+  #         git add .
+  #         if [[ $(git status --porcelain) ]]; then
+  #           git commit -m "Update Robot Framework logs"
+  #           git push https://sinesipho-jacobs:${{ secrets.ROBOT_LOGS_PAT }}@github.com/sinesipho-jacobs/robot-logs.git main
+  #         else
+  #           echo "No changes to commit."
+  #         fi
+          
+  # build-and-deploy-mkdocs:
+  #   if: always()
+  #   needs: push-logs-to-mkdocs-repo
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "📥 Checkout MkDocs Repository"
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: sinesipho-jacobs/robot-logs
+  #         path: robot-logs
+  #         token: ${{ secrets.ROBOT_LOGS_PAT }}  # Use GITHUB_TOKEN instead of PAT
+
+  #     - name: "📜 Install MkDocs"
+  #       run: pip install mkdocs
+        
+  #     - name: "📜 Install MkDocs Materials"
+  #       run: pip install mkdocs-material
+        
+  #     - name: "🔨 Build MkDocs Site"
+  #       run: |
+  #         cd robot-logs
+  #         mkdocs build
+
+  #     - name: "List All Repository Contents (including hidden)"
+  #       run: |
+  #         ls -lah
+
+  #     - name: Install Wrangler
+  #       run: npm install -g wrangler
+
+  #     # - name: Print Environment Variables
+  #     #   run: |
+  #     #     echo "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
+  #     #     echo "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+
+  #     # - name: Deploy
+  #     #   uses: cloudflare/wrangler-action@v3
+  #     #   with:
+  #     #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #     #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  #     #     command: pages deploy /site --project-name=robot-logs
+
+  #     - name: Deploy using Cloudflare API
+  #       run: |
+  #         curl -X POST "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/robot-logs/deployments" \
+  #           -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+  #           -H "Content-Type: application/json" \
+  #           --data '{"branch": "main", "commit_hash": "${{ github.sha }}"}'
+
+  #     # - name: Deploy to Cloudflare Pages with Wrangler
+  #     #   run: wrangler pages deploy docs/site --project-name=robot-logs
+  #     #   env:
+  #     #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  #     #     CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       
 
-      - name: "🔗 Add Cloudflare Pages Link to Summary"
-        run: |
-          echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
-          echo "[View Reports on Cloudflare Pages](https://robot-logs.pages.dev)" >> $GITHUB_STEP_SUMMARY
+  #     - name: "🔗 Add Cloudflare Pages Link to Summary"
+  #       run: |
+  #         echo "## 📄 Robot Framework Reports" >> $GITHUB_STEP_SUMMARY
+  #         echo "[View Reports on Cloudflare Pages](https://robot-logs.pages.dev)" >> $GITHUB_STEP_SUMMARY
