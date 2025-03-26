@@ -120,10 +120,18 @@ jobs:
 
       - name: Trigger MkDocs Workflow
         run: |
-          curl -X POST -H "Authorization: token ${{ secrets.ROBOT_LOGS_PAT }}" \
+          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.everest-preview+json" \
-          https://api.github.com/repos/sinesipho.jacobs/robot-logs/dispatches \
+          https://api.github.com/repos/sinesipho.jacobs/robot-logs/actions/workflows/dispatches \
           -d '{"event_type":"deploy_docs","client_payload":{"branch":"main"}}'
+
+      - name: Trigger target repository workflow
+        run: |
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/{owner}/{target-repo}/actions/workflows/{workflow_file}/dispatches \
+          -d '{"ref": "main"}'
 
   # push-logs-to-mkdocs-repo:
   #   if: always()
