@@ -91,4 +91,4 @@ jobs:
 
       - name: Trigger MkDocs Workflow
         run: |
-          gh api --method POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GH_PAT }}" /repos/sinesipho-jacobs/robot-logs/dispatches -f event_type=deploy-mkdocs -f client_payload='{"run_id": "${{ needs.merge-and-deploy.outputs.run_id.value }}"}'
+          gh api --method POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.ROBOT_LOGS_PAT }}" /repos/sinesipho-jacobs/robot-logs/dispatches -f event_type=deploy-mkdocs -f client_payload='{"run_id": "${{ needs.merge-and-deploy.outputs.run_id.value }}"}'
