@@ -86,10 +86,12 @@ jobs:
         run: python ./functions/check.py
 
       - name: Get Workflow Run ID
+        if: always()
         id: run_id
         run: echo "run_id=${{ github.run_id }}" >> $GITHUB_OUTPUT
 
       - name: Trigger MkDocs Workflow
+        if: always()
         run: |
           curl -X POST \
           -H "Accept: application/vnd.github+json" \
