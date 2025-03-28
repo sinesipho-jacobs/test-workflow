@@ -55,7 +55,7 @@ jobs:
       - name: Find and Merge Robot Framework logs
         run: |
           mkdir -p merged-results/
-          find ./robot-test-results -name "*.xml" -exec cp {} ./merged-results/ \;
+          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/ \;
 
           OUTPUT_FILES=$(find ./merged-results -name "output.xml" | tr '\n' ' ')
           if [ -n "$OUTPUT_FILES" ]; then
