@@ -54,12 +54,12 @@ jobs:
 
       - name: Find and Merge Robot Framework logs
         run: |
-          mkdir -p merged-results/
-          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/ \;
-          OUTPUT_FILES=$(find ./merged-results -name "output.xml" | tr '\n' ' ')
+          mkdir -p merged-results/${{ github.run_number }}
+          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
+          OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
           if [ -n "$OUTPUT_FILES" ]; then
             echo "Merging output files: $OUTPUT_FILES"
-            rebot --output ./merged-results/output.xml --log ./merged-results/log.html --report ./merged-results/report.html $OUTPUT_FILES
+            rebot --output ./merged-results/${{ github.run_number }}/output.xml --log ./merged-results/${{ github.run_number }}/log.html --report ./merged-results/${{ github.run_number }}/report.html $OUTPUT_FILES
           else
             echo "No output.xml files found. Skipping merging."
             exit 1
@@ -71,9 +71,9 @@ jobs:
         with:
           name: merged-results
           path: |
-            merged-results/output.xml
-            merged-results/log.html
-            merged-results/report.html
+            merged-results/${{ github.run_number }}/output.xml
+            merged-results/${{ github.run_number }}/log.html
+            merged-results/${{ github.run_number }}report.html
 
       - name: "Post Test Results to GitHub Checks"
         if: always()
