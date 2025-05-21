@@ -65,6 +65,23 @@ jobs:
             exit 1
           fi
 
+      # NEW STEP: Convert merged Robot Framework output to JUnit XML
+    # - name: Generate JUnit XML
+    #   working-directory: Nucleus-Testing/webapp_tests/merged_results/${{ github.run_number }}
+    #   run: |
+    #     poetry run rebot --xunit report.xml output.xml 
+    #   continue-on-error: true
+
+    # NEW STEP: Publish Test Results to GitHub Checks
+    # - name: Publish Test Results
+    #   uses: dorny/test-reporter@v1
+    #   if: always() # Run even if previous steps failed to show results
+    #   with:
+    #     name: Test Results # This will be the name in the GitHub Checks tab
+    #     path: Nucleus-Testing/webapp_tests/merged_results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
+    #     reporter: junit
+    #     fail-on-error: true # Set to false if you want the overall job to succeed even with test failures
+
       - name: "⬆️ Upload Merged Test Results"
         if: always()
         uses: actions/upload-artifact@v4
