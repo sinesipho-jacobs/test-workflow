@@ -81,7 +81,7 @@ jobs:
 
     # NEW STEP: Publish Test Results to GitHub Checks
       - name: Publish Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: always() # Run even if previous steps failed to show results
         with:
           name: Test Results # This will be the name in the GitHub Checks tab
