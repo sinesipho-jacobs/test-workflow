@@ -78,32 +78,31 @@ jobs:
       #     fi
       #   continue-on-error: true
 
-      - name: Merge and Convert Robot Framework Results to JUnit XML
+      # NEW STEP: Convert merged Robot Framework output to JUnit XML
+      - name: Generate JUnit XML
+        working-directory: ./merged-results/${{ github.run_number }}
         run: |
-          # Ensure the directory for the JUnit report exists
-          mkdir -p ./test-reports
-      
-          # Use rebot to process all *.xml files in robot-test-results
-          # --xunit specifies the output file for the JUnit XML report
-          # --output none prevents rebot from creating its own standard Robot Framework XML report
-          # if you only want the JUnit one. If you want both, remove --output none
-          rebot --xunit ./test-reports/junit_report.xml --output none ./robot-test-results/*.xml
-        # If you want the workflow to fail if rebot encounters issues, remove continue-on-error
-        continue-on-error: false # It's good practice to fail if this critical step fails
-      
+          if [ -f output.xml ]; then
+            echo "Generating JUnit XML from output.xml"
+            rebot --xunit report.xml output.xml
+          else
+            echo "output.xml not found, skipping JUnit XML generation."
+          fi
+        continue-on-error: true
+
       - name: Debug - Print Merged JUnit XML
-        run: cat ./test-reports/junit_report.xml
-      
+        run: cat ./merged-results/${{ github.run_number }}/report.xml
+
+    # NEW STEP: Publish Test Results to GitHub Checks
       - name: Publish Test Results
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v1
+        if: always() # Run even if previous steps failed to show results
         with:
-          name: Robot Framework Test Results
-          # Point to the single, combined JUnit XML file
-          path: './test-reports/junit_report.xml'
-          # The correct reporter for JUnit XML
-          reporter: java-junit
-          # Optional: Fail the GitHub Action if the report parsing fails
+          name: Test Results # This will be the name in the GitHub Checks tab
+          path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
+          reporter: swift-xunit
           fail-on-error: true
+            
     # NEW STEP: Publish Test Results to GitHub Checks
       # - name: Publish Test Results
       #   uses: dorny/test-reporter@v1
