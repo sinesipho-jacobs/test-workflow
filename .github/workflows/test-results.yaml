@@ -86,7 +86,7 @@ jobs:
         with:
           name: Test Results # This will be the name in the GitHub Checks tab
           path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
-          reporter: java-junit
+          reporter: swift-xunit
           fail-on-error: true
 
 
@@ -100,14 +100,14 @@ jobs:
             merged-results/${{ github.run_number }}/log.html
             merged-results/${{ github.run_number }}report.html
 
-      - name: "Post Test Results to GitHub Checks"
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_SHA: ${{ github.sha }}
-          JOB_NAME: ${{ github.job }}
-        run: python ./functions/check.py
+      # - name: "Post Test Results to GitHub Checks"
+      #   if: always()
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     GITHUB_REPOSITORY: ${{ github.repository }}
+      #     GITHUB_SHA: ${{ github.sha }}
+      #     JOB_NAME: ${{ github.job }}
+      #   run: python ./functions/check.py
 
       - name: Get Workflow Run ID
         if: always()
