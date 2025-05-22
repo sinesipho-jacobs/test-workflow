@@ -87,6 +87,8 @@ jobs:
           name: Test Results # This will be the name in the GitHub Checks tab
           path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
           reporter: java-junit
+          list-tests: failed
+          list-suites: failed
           fail-on-error: true
 
 
