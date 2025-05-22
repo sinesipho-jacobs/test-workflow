@@ -71,7 +71,7 @@ jobs:
         run: |
           if [ -f output.xml ]; then
             echo "Generating JUnit XML from output.xml"
-            run rebot --xunit report.xml output.xml
+            rebot --xunit report.xml output.xml
           else
             echo "output.xml not found, skipping JUnit XML generation."
           fi
