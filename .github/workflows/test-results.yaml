@@ -85,8 +85,9 @@ jobs:
         with:
           name: Test Results # This will be the name in the GitHub Checks tab
           path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
-          reporter: junit
-          fail-on-error: true # Set to false if you want the overall job to succeed even with test failures
+          reporter: java-junit
+          fail-on-error: true
+
 
       - name: "⬆️ Upload Merged Test Results"
         if: always()
