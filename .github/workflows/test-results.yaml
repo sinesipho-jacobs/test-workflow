@@ -90,10 +90,10 @@ jobs:
           rebot --xunit ./test-reports/junit_report.xml --output none ./robot-test-results/*.xml
         # If you want the workflow to fail if rebot encounters issues, remove continue-on-error
         continue-on-error: false # It's good practice to fail if this critical step fails
-
+      
       - name: Debug - Print Merged JUnit XML
         run: cat ./test-reports/junit_report.xml
-
+      
       - name: Publish Test Results
         uses: dorny/test-reporter@v2
         with:
