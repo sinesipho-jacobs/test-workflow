@@ -34,6 +34,7 @@ jobs:
     permissions:
       contents: write
       actions: write
+      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout Repository"
