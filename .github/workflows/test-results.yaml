@@ -57,8 +57,8 @@ jobs:
         run: |
           mkdir -p merged-results/${{ github.run_number }}
       
-          # Find and copy only output.xml files from robot-test-results-* folders
-          find . -type f -path "./robot-test-results-*/output.xml" -exec cp {} ./merged-results/${{ github.run_number }}/ \;
+          # Copy only the relevant output.xml files from robot-test-results-*
+          find ./robot-test-results/robot-test-results-* -type f -name "output.xml" -exec cp {} ./merged-results/${{ github.run_number }}/ \;
       
           OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
       
@@ -73,6 +73,7 @@ jobs:
             echo "No output.xml files found. Skipping merging."
             exit 1
           fi
+
 
 
       # - name: Find and merge output.xml files
