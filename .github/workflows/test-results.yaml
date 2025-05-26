@@ -66,6 +66,12 @@ jobs:
             exit 1
           fi
 
+      - name: Find and merge output.xml files
+        working-directory: test-workflow
+        run: |
+          mkdir -p merged_results/${{ github.run_number }}
+          run: python test-workflow/functions/merge_reports.py --output-dir merged_results/${{ github.run_number }} || true
+
       # NEW STEP: Convert merged Robot Framework output to JUnit XML
       # - name: Generate JUnit XML
       #   working-directory: ./merged-results/${{ github.run_number }}
