@@ -98,7 +98,7 @@ jobs:
         with:
           name: Test Results # This will be the name in the GitHub Checks tab
           path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
-          reporter: swift-xunit
+          reporter: java-junit
           fail-on-error: true
             
     # NEW STEP: Publish Test Results to GitHub Checks
