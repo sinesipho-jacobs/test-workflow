@@ -56,15 +56,24 @@ jobs:
       - name: Find and Merge Robot Framework logs
         run: |
           mkdir -p merged-results/${{ github.run_number }}
-          find ./robot-test-results-* -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
+      
+          # Find and copy only output.xml files from robot-test-results-* folders
+          find . -type f -path "./robot-test-results-*/output.xml" -exec cp {} ./merged-results/${{ github.run_number }}/ \;
+      
           OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
+      
           if [ -n "$OUTPUT_FILES" ]; then
             echo "Merging output files: $OUTPUT_FILES"
-            rebot --output ./merged-results/${{ github.run_number }}/output.xml --log ./merged-results/${{ github.run_number }}/log.html --report ./merged-results/${{ github.run_number }}/report.html $OUTPUT_FILES
+            rebot \
+              --output ./merged-results/${{ github.run_number }}/output.xml \
+              --log ./merged-results/${{ github.run_number }}/log.html \
+              --report ./merged-results/${{ github.run_number }}/report.html \
+              $OUTPUT_FILES
           else
             echo "No output.xml files found. Skipping merging."
             exit 1
           fi
+
 
       # - name: Find and merge output.xml files
       #   run: |
