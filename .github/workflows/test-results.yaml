@@ -56,7 +56,7 @@ jobs:
       - name: Find and Merge Robot Framework logs
         run: |
           mkdir -p merged-results/${{ github.run_number }}
-          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
+          find ./robot-test-results-* -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
           OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
           if [ -n "$OUTPUT_FILES" ]; then
             echo "Merging output files: $OUTPUT_FILES"
