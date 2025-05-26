@@ -53,36 +53,8 @@ jobs:
         with:
           path: ./robot-test-results/
 
-      - name: Find and Merge Robot Framework logs
-        run: |
-          mkdir -p merged-results/${{ github.run_number }}
-      
-          # Find and copy output.xml files
-          find ./robot-test-results/robot-test-results-* -type f -name "output.xml" -exec cp {} ./merged-results/${{ github.run_number }}/ \;
-      
-          # Count and collect output.xml files
-          OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml")
-          COUNT=$(echo "$OUTPUT_FILES" | wc -l)
-      
-          if [ "$COUNT" -gt 1 ]; then
-            echo "Merging $COUNT output.xml files..."
-            rebot \
-              --output ./merged-results/${{ github.run_number }}/output.xml \
-              --log ./merged-results/${{ github.run_number }}/log.html \
-              --report ./merged-results/${{ github.run_number }}/report.html \
-              $OUTPUT_FILES
-          elif [ "$COUNT" -eq 1 ]; then
-            echo "Only one output.xml found, copying it directly..."
-            cp $OUTPUT_FILES ./merged-results/${{ github.run_number }}/output.xml
-            # Optionally run rebot just to regenerate log.html and report.html:
-            rebot \
-              --log ./merged-results/${{ github.run_number }}/log.html \
-              --report ./merged-results/${{ github.run_number }}/report.html \
-              ./merged-results/${{ github.run_number }}/output.xml
-          else
-            echo "No output.xml files found. Skipping merging."
-            exit 1
-          fi
+      - name: Merge Robot Logs
+        run: python merge_robot_logs.py --output-dir merged-results/${{ github.run_number }}
 
 
 
