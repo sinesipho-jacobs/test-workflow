@@ -53,21 +53,20 @@ jobs:
         with:
           path: ./robot-test-results/
 
-      - name: Find and Merge Robot Framework logs
-        run: |
-          mkdir -p merged-results/${{ github.run_number }}
-          find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
-          OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
-          if [ -n "$OUTPUT_FILES" ]; then
-            echo "Merging output files: $OUTPUT_FILES"
-            rebot --output ./merged-results/${{ github.run_number }}/output.xml --log ./merged-results/${{ github.run_number }}/log.html --report ./merged-results/${{ github.run_number }}/report.html $OUTPUT_FILES
-          else
-            echo "No output.xml files found. Skipping merging."
-            exit 1
-          fi
+      # - name: Find and Merge Robot Framework logs
+      #   run: |
+      #     mkdir -p merged-results/${{ github.run_number }}
+      #     find ./robot-test-results -name "*.xml" -exec mv {} ./merged-results/${{ github.run_number }}/ \;
+      #     OUTPUT_FILES=$(find ./merged-results/${{ github.run_number }} -name "output.xml" | tr '\n' ' ')
+      #     if [ -n "$OUTPUT_FILES" ]; then
+      #       echo "Merging output files: $OUTPUT_FILES"
+      #       rebot --output ./merged-results/${{ github.run_number }}/output.xml --log ./merged-results/${{ github.run_number }}/log.html --report ./merged-results/${{ github.run_number }}/report.html $OUTPUT_FILES
+      #     else
+      #       echo "No output.xml files found. Skipping merging."
+      #       exit 1
+      #     fi
 
       - name: Find and merge output.xml files
-        working-directory: test-workflow
         run: |
           mkdir -p merged_results/${{ github.run_number }}
           run: python test-workflow/functions/merge_reports.py --output-dir merged_results/${{ github.run_number }} || true
