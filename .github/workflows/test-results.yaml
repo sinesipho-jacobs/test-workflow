@@ -54,7 +54,7 @@ jobs:
           path: ./robot-test-results/
 
       - name: Merge Robot Logs
-        run: python functions/merge_robot_logs.py --output-dir merged-results/${{ github.run_number }}
+        run: python functions/merge_reports.py --output-dir merged-results/${{ github.run_number }}
 
 
 
