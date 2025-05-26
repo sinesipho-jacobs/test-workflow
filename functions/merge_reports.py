@@ -16,28 +16,28 @@ def parse_robot_timestamp(timestamp_str):
         print(f"Warning: Failed to parse timestamp '{timestamp_str}': {str(e)}")
         return None
 
-def find_results_directories(base_pattern='test-results-'):
-    """Find all directories matching the base pattern"""
-    return [d for d in glob.glob(f"{base_pattern}*") if os.path.isdir(d)]
+def find_results_directories(base_dir='robot-test-results', base_pattern='robot-test-results-'):
+    """Find all directories matching the base pattern inside base_dir"""
+    search_path = os.path.join(base_dir, f"{base_pattern}*")
+    return [d for d in glob.glob(search_path) if os.path.isdir(d)]
 
 def find_robot_results(directory):
-    """Find all robot output files in a directory"""
-    patterns = ['output.xml', '*.xml', '**/output.xml', '**/*.xml']
+    """Find all valid robot output files in a directory"""
+    patterns = ['output.xml', '**/output.xml']
     found_files = set()
     
     for pattern in patterns:
         for filepath in glob.glob(os.path.join(directory, pattern), recursive=True):
             if os.path.isfile(filepath):
                 try:
-                    # Quick validation that it's a robot file
-                    ExecutionResult(filepath)
+                    ExecutionResult(filepath)  # Validate it's a Robot file
                     found_files.add(os.path.abspath(filepath))
                 except:
                     continue
     return sorted(found_files)
 
 def merge_reports(results_dirs, output_dir):
-    """Merge all Robot Framework reports"""
+    """Merge all Robot Framework output files into a single report"""
     all_files = []
     for directory in results_dirs:
         files = find_robot_results(directory)
@@ -47,12 +47,12 @@ def merge_reports(results_dirs, output_dir):
                 print(f"  - {f}")
             all_files.extend(files)
         else:
-            print(f"Warning: No valid Robot files found in {directory}")
-    
+            print(f"Warning: No valid Robot output files found in {directory}")
+
     if not all_files:
         print("Error: No valid result files found in any directory")
         return False
-    
+
     start_times = []
     end_times = []
     valid_files = []
@@ -60,13 +60,12 @@ def merge_reports(results_dirs, output_dir):
     for xml_file in all_files:
         try:
             result = ExecutionResult(xml_file)
-            if hasattr(result.suite, 'starttime') and hasattr(result.suite, 'endtime'):
-                start_dt = parse_robot_timestamp(result.suite.starttime)
-                end_dt = parse_robot_timestamp(result.suite.endtime)
-                if start_dt and end_dt:
-                    start_times.append(start_dt)
-                    end_times.append(end_dt)
-                    valid_files.append(xml_file)
+            start_dt = parse_robot_timestamp(getattr(result.suite, 'starttime', ''))
+            end_dt = parse_robot_timestamp(getattr(result.suite, 'endtime', ''))
+            if start_dt and end_dt:
+                start_times.append(start_dt)
+                end_times.append(end_dt)
+                valid_files.append(xml_file)
         except Exception as e:
             print(f"Warning: Error processing {xml_file}: {str(e)}")
 
@@ -74,11 +73,11 @@ def merge_reports(results_dirs, output_dir):
         print("Error: No files with valid timestamps found")
         return False
 
-    start_time = min(start_times).strftime('%Y%m%d %H:%M:%S')
-    end_time = max(end_times).strftime('%Y%m%d %H:%M:%S')
-
     os.makedirs(output_dir, exist_ok=True)
     output_base = os.path.join(output_dir, "")
+
+    start_time = min(start_times).strftime('%Y%m%d %H:%M:%S')
+    end_time = max(end_times).strftime('%Y%m%d %H:%M:%S')
 
     cmd = (
         f'rebot '
@@ -110,17 +109,16 @@ if __name__ == "__main__":
     print("Robot Framework Report Merger")
     print("=" * 50)
 
-    # Find all matching directories
+    # Find all matching result directories
     results_dirs = find_results_directories()
     
     if not results_dirs:
-        print("No test-results-* directories found")
+        print("No robot-test-results-* directories found")
         sys.exit(1)
-    
+
     print(f"Found {len(results_dirs)} results directories:")
     for d in results_dirs:
         print(f"- {d}")
-    
-    output_path = args.output_dir
-    if not merge_reports(results_dirs, output_path):
+
+    if not merge_reports(results_dirs, args.output_dir):
         sys.exit(1)
