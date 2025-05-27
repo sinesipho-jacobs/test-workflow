@@ -57,7 +57,11 @@ jobs:
         run: python functions/merge_reports.py --output-dir merged-results/${{ github.run_number }} || true
 
 
-
+      - name: Report Results
+        uses: MarketSquare/robotframework-reporter-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          report-path: ./merged_results/${{ github.run_number }}/output.xml 
 
       # - name: Find and merge output.xml files
       #   run: |
@@ -77,29 +81,29 @@ jobs:
       #   continue-on-error: true
 
       # NEW STEP: Convert merged Robot Framework output to JUnit XML
-      - name: Generate JUnit XML
-        working-directory: ./merged-results/${{ github.run_number }}
-        run: |
-          if [ -f output.xml ]; then
-            echo "Generating JUnit XML from output.xml"
-            rebot --xunit report.xml output.xml
-          else
-            echo "output.xml not found, skipping JUnit XML generation."
-          fi
-        continue-on-error: true
+      # - name: Generate JUnit XML
+      #   working-directory: ./merged-results/${{ github.run_number }}
+      #   run: |
+      #     if [ -f output.xml ]; then
+      #       echo "Generating JUnit XML from output.xml"
+      #       rebot --xunit report.xml output.xml
+      #     else
+      #       echo "output.xml not found, skipping JUnit XML generation."
+      #     fi
+      #   continue-on-error: true
 
-      - name: Debug - Print Merged JUnit XML
-        run: cat ./merged-results/${{ github.run_number }}/report.xml
+      # - name: Debug - Print Merged JUnit XML
+      #   run: cat ./merged-results/${{ github.run_number }}/report.xml
 
     # NEW STEP: Publish Test Results to GitHub Checks
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v1
-        if: always() # Run even if previous steps failed to show results
-        with:
-          name: Test Results # This will be the name in the GitHub Checks tab
-          path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
-          reporter: java-junit
-          fail-on-error: true
+      # - name: Publish Test Results
+      #   uses: dorny/test-reporter@v1
+      #   if: always() # Run even if previous steps failed to show results
+      #   with:
+      #     name: Test Results # This will be the name in the GitHub Checks tab
+      #     path: ./merged-results/${{ github.run_number }}/report.xml # Path to your generated JUnit XML
+      #     reporter: java-junit
+      #     fail-on-error: true
             
     # NEW STEP: Publish Test Results to GitHub Checks
       # - name: Publish Test Results
