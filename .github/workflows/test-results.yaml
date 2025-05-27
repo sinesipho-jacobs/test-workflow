@@ -57,13 +57,6 @@ jobs:
         run: python functions/merge_reports.py --output-dir merged-results/${{ github.run_number }} || true
 
 
-      - name: Publish Robot Framework Report
-        uses: joonvena/robotframework-reporter-action@v2.4 # Use v2.4 or higher for RF 7+
-        if: always() # Ensure this step runs even if tests fail
-        with:
-          report_path: ./merged-results/${{ github.run_number }}/output.xml # Path to your output.xml file
-          gh_access_token: ${{ secrets.GITHUB_TOKEN }}
-
       # - name: Find and merge output.xml files
       #   run: |
       #     mkdir -p merged_results/${{ github.run_number }}
