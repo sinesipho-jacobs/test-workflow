@@ -57,11 +57,12 @@ jobs:
         run: python functions/merge_reports.py --output-dir merged-results/${{ github.run_number }} || true
 
 
-      - name: Report Results
-        uses: MarketSquare/robotframework-reporter-action@v2
+      - name: Publish Robot Framework Report
+        uses: joonvena/robotframework-reporter-action@v2.4 # Use v2.4 or higher for RF 7+
+        if: always() # Ensure this step runs even if tests fail
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          report-path: ./merged_results/${{ github.run_number }}/output.xml 
+          path: ./merged-results/${{ github.run_number }}/output.xml # Path to your output.xml file
+          report-name: "Robot Framework Test Report"
 
       # - name: Find and merge output.xml files
       #   run: |
