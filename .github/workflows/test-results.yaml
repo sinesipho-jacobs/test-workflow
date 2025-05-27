@@ -61,8 +61,8 @@ jobs:
         uses: joonvena/robotframework-reporter-action@v2.4 # Use v2.4 or higher for RF 7+
         if: always() # Ensure this step runs even if tests fail
         with:
-          path: ./merged-results/${{ github.run_number }}/output.xml # Path to your output.xml file
-          report-name: "Robot Framework Test Report"
+          report_path: ./merged-results/${{ github.run_number }}/output.xml # Path to your output.xml file
+          gh_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Find and merge output.xml files
       #   run: |
