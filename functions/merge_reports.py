@@ -83,7 +83,6 @@ def merge_reports(results_dirs, output_dir):
         f'rebot '
         f'--starttime "{start_time}" '
         f'--endtime "{end_time}" '
-        f'--name "Web Tests" '
         f'--output {output_base}output.xml '
         f'--log {output_base}log.html '
         f'--report {output_base}report.html '
